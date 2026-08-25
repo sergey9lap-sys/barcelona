@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-25T00:00:00+03:00",
+  "title": "Design System: 1899 Barcelona Vision Interactives",
+  "extensions": {
+    "colorMeta": {
+      "floodlight-white": { "role": "neutral", "displayName": "Свет прожектора", "canonical": "#f7f9ff", "tonalRamp": ["#161719", "#343538", "#56585d", "#7b7d84", "#a2a5ae", "#c9ccd6", "#e5e7ef", "#f7f9ff"] },
+      "commentary-muted": { "role": "neutral", "displayName": "Комментарий", "canonical": "#aebddd", "tonalRamp": ["#181b22", "#303846", "#4c5a70", "#687b98", "#879cbe", "#aebddd", "#d4dded", "#f1f4fa"] },
+      "broadcast-blue": { "role": "primary", "displayName": "Синий эфир", "canonical": "#2f68df", "tonalRamp": ["#09152d", "#11295d", "#1b408f", "#2758c2", "#3f75e5", "#75a0ed", "#b1c8f6", "#edf3fd"] },
+      "stadium-navy": { "role": "neutral", "displayName": "Ночной стадион", "canonical": "#071126", "tonalRamp": ["#030713", "#071126", "#112340", "#293b5a", "#52637d", "#8392a8", "#bbc5d3", "#edf0f5"] },
+      "control-panel": { "role": "neutral", "displayName": "Операторская панель", "canonical": "#0c1937", "tonalRamp": ["#050a16", "#0c1937", "#18305d", "#314b79", "#5a6f98", "#8999b8", "#bdc7d8", "#eef1f6"] },
+      "barca-garnet": { "role": "secondary", "displayName": "Гранатовый свет", "canonical": "#b71955", "tonalRamp": ["#280512", "#510b25", "#7b1139", "#a3174c", "#c73267", "#d96b90", "#e9a8be", "#f9e8ef"] },
+      "signal-yellow": { "role": "tertiary", "displayName": "Жёлтый сигнал", "canonical": "#f5c84b", "tonalRamp": ["#2b2308", "#5a480f", "#8a6e18", "#bd9727", "#e5ba42", "#f5d476", "#fae7b2", "#fff8e6"] },
+      "signal-green": { "role": "tertiary", "displayName": "Зелёный эфир", "canonical": "#52d994", "tonalRamp": ["#08271a", "#105039", "#197a56", "#2da575", "#55cc97", "#85dfb5", "#b8eed3", "#e9faf2"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Главные заголовки страницы и экспортируемой карточки." },
+      "body": { "displayName": "Body", "purpose": "Инструкции, списки игроков и элементы управления." },
+      "label": { "displayName": "Broadcast Label", "purpose": "Эфирные метки, статусы и kicker." }
+    },
+    "shadows": [
+      { "name": "poster-lift", "value": "0 28px 90px rgba(0, 0, 0, .34)", "purpose": "Отделяет готовую share-карточку от операторской поверхности." },
+      { "name": "action-glow", "value": "0 12px 32px rgba(103, 28, 105, .24)", "purpose": "Мягкое свечение основной кнопки." }
+    ],
+    "motion": [
+      { "name": "signal-open", "value": "720ms cubic-bezier(.16, 1, .3, 1)", "purpose": "Однократное открытие жёлто-гранатовой сигнальной линии." },
+      { "name": "control-response", "value": "180ms ease", "purpose": "Короткая реакция hover и выбранных состояний." }
+    ],
+    "breakpoints": [
+      { "name": "compact-desktop", "value": "1060px" },
+      { "name": "mobile-stack", "value": "820px" },
+      { "name": "phone", "value": "560px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Главное действие интерактива и запуск скачивания.",
+      "html": "<button class=\"ds-primary-action\">Скачать результат</button>",
+      "css": ".ds-primary-action{min-height:52px;width:100%;border:0;border-radius:7px;padding:0 20px;color:#f7f9ff;background:linear-gradient(110deg,#2f68df,#b71955);font-family:'BV Onest',sans-serif;font-weight:800;box-shadow:0 12px 32px rgba(103,28,105,.24);transition:180ms ease}.ds-primary-action:hover{filter:brightness(1.08);transform:translateY(-1px)}.ds-primary-action:focus-visible{outline:2px solid #f5c84b;outline-offset:3px}.ds-primary-action:active{transform:translateY(0)}"
+    },
+    {
+      "name": "Player Tile",
+      "kind": "custom",
+      "description": "Компактный выбор игрока с портретом и явным выбранным состоянием.",
+      "html": "<button class=\"ds-player-tile\"><span class=\"ds-player-photo\"></span><span><strong>Педри</strong><small>Полузащитник · №8</small></span><i>✓</i></button>",
+      "css": ".ds-player-tile{min-height:64px;display:flex;align-items:center;gap:10px;padding:7px;border:1px solid rgba(226,54,113,.64);border-radius:7px;color:#f7f9ff;background:linear-gradient(135deg,rgba(45,104,223,.18),rgba(183,25,85,.18));font-family:'BV Onest',sans-serif;text-align:left;transition:180ms ease}.ds-player-tile:hover{transform:translateY(-1px)}.ds-player-tile:focus-visible{outline:2px solid #f5c84b;outline-offset:2px}.ds-player-photo{width:46px;height:46px;border-radius:10px;background:linear-gradient(145deg,#2f68df,#b71955)}.ds-player-tile span{display:grid;gap:4px}.ds-player-tile strong{font-size:12px}.ds-player-tile small{color:#93a6ce;font-size:10px}.ds-player-tile i{margin-left:auto;color:#f5c84b;font-style:normal}"
+    },
+    {
+      "name": "Control Panel",
+      "kind": "card",
+      "refersTo": "card-control",
+      "description": "Строгая рабочая поверхность операторской.",
+      "html": "<section class=\"ds-control-panel\"><strong>Выберите игроков</strong><p>Соберите свой вариант за 30 секунд.</p></section>",
+      "css": ".ds-control-panel{padding:22px;border:1px solid rgba(148,176,238,.17);border-radius:8px;color:#f7f9ff;background:linear-gradient(90deg,rgba(245,200,75,.16) 0 2px,transparent 2px),linear-gradient(145deg,rgba(14,31,70,.86),rgba(7,17,42,.96));font-family:'BV Onest',sans-serif}.ds-control-panel p{margin:8px 0 0;color:#aebddd}.ds-control-panel:focus-within{border-color:rgba(245,200,75,.45)}"
+    },
+    {
+      "name": "Share Preview",
+      "kind": "card",
+      "refersTo": "card-preview",
+      "description": "Кинематографичная карточка 4:5, совпадающая с PNG-экспортом.",
+      "html": "<article class=\"ds-share-preview\"><small>1899 BARCELONA VISION</small><h2>МОЙ СОСТАВ</h2><p>Эльче — Барселона</p></article>",
+      "css": ".ds-share-preview{aspect-ratio:4/5;padding:28px;border:1px solid rgba(135,166,237,.22);border-radius:20px;color:#f7f9ff;background:radial-gradient(circle at 10% 0%,rgba(54,111,245,.42),transparent 48%),radial-gradient(circle at 95% 95%,rgba(191,22,83,.38),transparent 46%),linear-gradient(145deg,#0a1837,#071127 58%,#260b25);box-shadow:0 28px 90px rgba(0,0,0,.34);font-family:'BV Onest',sans-serif}.ds-share-preview small{color:#f5c84b;font-weight:800;letter-spacing:.12em}.ds-share-preview h2{margin:22px 0 0;font-family:'BV Unbounded',sans-serif;font-size:38px;line-height:1}.ds-share-preview p{color:#aebddd}"
+    },
+    {
+      "name": "Next Interactive",
+      "kind": "nav",
+      "description": "Одна конкретная ссылка на логичное продолжение.",
+      "html": "<a class=\"ds-next-action\" href=\"#\"><strong>Сделать прогноз</strong><small>Назовите счёт следующего матча</small><i>↗</i></a>",
+      "css": ".ds-next-action{position:relative;min-height:118px;display:grid;align-content:center;gap:6px;padding:18px 48px 18px 18px;border:1px solid rgba(148,176,238,.17);border-radius:8px;color:#f7f9ff;background:rgba(255,255,255,.035);font-family:'BV Onest',sans-serif;text-decoration:none;transition:180ms ease}.ds-next-action:hover{border-color:rgba(226,54,113,.45);background:rgba(183,25,85,.08);transform:translateY(-2px)}.ds-next-action:focus-visible{outline:2px solid #f5c84b;outline-offset:3px}.ds-next-action small{color:#98a9cd}.ds-next-action i{position:absolute;top:16px;right:16px;color:#f5c84b;font-style:normal}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Ночная операторская",
+    "overview": "Интерфейс ощущается как пульт прямой футбольной трансляции на ночном стадионе. Пользователь не изучает приложение: он сразу выполняет одно действие, одновременно видит будущий постер и получает результат, который выглядит готовым к публикации. Мир серьёзный, кинематографичный и плотный.",
+    "keyCharacteristics": ["Одна страница — одно быстрое футбольное решение.", "Редактор и PNG-превью видны одновременно на широком экране.", "На телефоне управление всегда предшествует результату.", "Жёлтый используется как редкий сигнал, а не как постоянная заливка.", "Экспорт продолжает визуальный мир интерфейса."],
+    "rules": [
+      { "name": "The One Signal Rule", "body": "Жёлтый акцент ведёт взгляд к одному следующему решению; он не конкурирует с синим и гранатовым на больших площадях.", "section": "colors" },
+      { "name": "The Night Match Rule", "body": "Светлые поверхности допустимы только внутри фотографий и спортивных материалов, но не как фон интерфейса.", "section": "colors" },
+      { "name": "The One Display Voice Rule", "body": "Unbounded используется только там, где пользователь должен почувствовать название события или результата; элементы управления остаются в Onest.", "section": "typography" },
+      { "name": "The Flat Controls Rule", "body": "Обычные карточки не получают декоративных теней: состояние показывается границей, тоном и сдвигом не более 2px.", "section": "elevation" }
+    ],
+    "dos": ["Do сохранять одно главное действие и один жёлтый визуальный сигнал на экран.", "Do показывать редактор и будущий экспорт рядом, когда ширина позволяет.", "Do оставлять в конце только один или два логичных следующих интерактива.", "Do использовать object-position: top для портретов игроков.", "Do поддерживать prefers-reduced-motion и видимый focus ring для каждого элемента управления."],
+    "donts": ["Don't превращать страницы в каталог, дашборд или вход в большую платформу.", "Don't добавлять регистрацию, Supabase или выдуманный адрес Telegram.", "Don't использовать мультяшные иллюстрации, белые SaaS-поверхности или набор разноцветных акцентов.", "Don't применять крупные радиусы и тени ко всем рабочим карточкам.", "Don't отделять стиль скачанного PNG от визуального мира страницы."]
+  }
+}

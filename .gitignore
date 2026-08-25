@@ -1,0 +1,10 @@
+.next/
+.next-dev/
+node_modules/
+out/
+*.log
+*.tsbuildinfo
+.env*
+!.env.example
+.DS_Store
+.impeccable/review/
