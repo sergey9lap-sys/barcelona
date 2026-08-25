@@ -37,7 +37,10 @@ export function FantasyInteractive() {
 
   const ready = selected.length === 5 && Boolean(captainId);
   return (
-    <InteractiveShell step="Перед матчем · 40 секунд" title="Соберите Fantasy-пятёрку" description="Выберите любых пять футболистов, уложитесь в 45 CR и назначьте капитана с двойными очками." preview={
+    <InteractiveShell step="Перед матчем · 40 секунд" title="Соберите Fantasy-пятёрку" description="Выберите любых пять футболистов, уложитесь в 45 CR и назначьте капитана с двойными очками." afterVisible={ready} after={<NextActions actions={[
+      { href: "/prognoz", label: "Сделать прогноз", description: "Выберите исход и точный счёт" },
+      { href: "/sostav", label: "Собрать стартовые 11", description: "Расставьте полный состав на поле" },
+    ]} />} preview={
       <SharePreview title="Моя Fantasy-пятёрка" subtitle={`${MATCH.home} — ${MATCH.away}`}>
         <div className="preview-five">{selected.map((player) => <div key={player.id}><Image src={player.image} alt="" width={70} height={95} /><strong>{player.name}</strong><span>{player.id === captainId ? "Капитан ×2" : `${player.fantasyCost} CR`}</span></div>)}</div>
       </SharePreview>
@@ -47,10 +50,6 @@ export function FantasyInteractive() {
         <div className="player-grid">{players.map((player) => <PlayerTile key={player.id} player={player} selected={selectedIds.includes(player.id)} onClick={() => toggle(player.id)} meta={`${player.fantasyCost} CR · №${player.number ?? "—"}`} disabled={!selectedIds.includes(player.id) && (selected.length >= 5 || spent + player.fantasyCost > BUDGET)} />)}</div>
       </section>
       {selected.length === 5 ? <section className="control-panel"><div className="control-title"><h2>Назначьте капитана</h2><span>очки ×2</span></div><div className="captain-grid">{selected.map((player) => <button key={player.id} className={captainId === player.id ? "is-selected" : ""} type="button" onClick={() => setCaptainId(player.id)}>{player.name}</button>)}</div><DownloadButton onClick={download} disabled={!ready} busy={busy} /></section> : null}
-      <NextActions actions={[
-        { href: "/prognoz", label: "Сделать прогноз", description: "Выберите исход и точный счёт" },
-        { href: "/sostav", label: "Собрать стартовые 11", description: "Расставьте полный состав на поле" },
-      ]} />
     </InteractiveShell>
   );
 }

@@ -28,7 +28,10 @@ export function TransferVerdictInteractive() {
   }
 
   return (
-    <InteractiveShell step="Трансферное окно · 20 секунд" title={`${target.name} в Барсе?`} description="Выберите свой вердикт по конкретной трансферной цели и скачайте карточку для обсуждения." preview={
+    <InteractiveShell step="Трансферное окно · 20 секунд" title={`${target.name} в Барсе?`} description="Выберите свой вердикт по конкретной трансферной цели и скачайте карточку для обсуждения." after={<NextActions actions={[
+      { href: "/transfer-vhod", label: "Выбрать главную покупку", description: "Кого Барсе нужно подписать первым" },
+      { href: "/transfer-vyhod", label: "Выбрать игрока на выход", description: "Кого стоит продать первым" },
+    ]} />} preview={
       <SharePreview title="Мой трансферный вердикт" subtitle={`${target.name} · ${target.club}`}>
         <div className="preview-choice"><div><Image src={target.image} alt="" width={270} height={360} /><strong>{verdict.label}</strong><span>{verdict.detail}</span></div></div>
       </SharePreview>
@@ -38,10 +41,6 @@ export function TransferVerdictInteractive() {
         <div className="choice-grid">{verdicts.map((item) => <button key={item.id} className={`choice-card${verdictId === item.id ? " is-selected" : ""}`} type="button" onClick={() => setVerdictId(item.id)}><span><strong>{item.label}</strong><small>{item.detail}</small></span></button>)}</div>
         <DownloadButton onClick={download} busy={busy} />
       </section>
-      <NextActions actions={[
-        { href: "/transfer-vhod", label: "Выбрать главную покупку", description: "Кого Барсе нужно подписать первым" },
-        { href: "/transfer-vyhod", label: "Выбрать игрока на выход", description: "Кого стоит продать первым" },
-      ]} />
     </InteractiveShell>
   );
 }

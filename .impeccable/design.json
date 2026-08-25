@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-25T00:00:00+03:00",
+  "generatedAt": "2026-08-26T00:00:00+03:00",
   "title": "Design System: 1899 Barcelona Vision Interactives",
   "extensions": {
     "colorMeta": {
@@ -24,7 +24,8 @@
     ],
     "motion": [
       { "name": "signal-open", "value": "720ms cubic-bezier(.16, 1, .3, 1)", "purpose": "Однократное открытие жёлто-гранатовой сигнальной линии." },
-      { "name": "control-response", "value": "180ms ease", "purpose": "Короткая реакция hover и выбранных состояний." }
+      { "name": "control-response", "value": "180ms ease", "purpose": "Короткая реакция hover и выбранных состояний." },
+      { "name": "stage-progress", "value": "240ms cubic-bezier(.16, 1, .3, 1)", "purpose": "Продвижение по последовательным сценариям домино и дедлайна." }
     ],
     "breakpoints": [
       { "name": "compact-desktop", "value": "1060px" },
@@ -61,8 +62,31 @@
       "kind": "card",
       "refersTo": "card-preview",
       "description": "Кинематографичная карточка 4:5, совпадающая с PNG-экспортом.",
-      "html": "<article class=\"ds-share-preview\"><small>1899 BARCELONA VISION</small><h2>МОЙ СОСТАВ</h2><p>Эльче — Барселона</p></article>",
-      "css": ".ds-share-preview{aspect-ratio:4/5;padding:28px;border:1px solid rgba(135,166,237,.22);border-radius:20px;color:#f7f9ff;background:radial-gradient(circle at 10% 0%,rgba(54,111,245,.42),transparent 48%),radial-gradient(circle at 95% 95%,rgba(191,22,83,.38),transparent 46%),linear-gradient(145deg,#0a1837,#071127 58%,#260b25);box-shadow:0 28px 90px rgba(0,0,0,.34);font-family:'BV Onest',sans-serif}.ds-share-preview small{color:#f5c84b;font-weight:800;letter-spacing:.12em}.ds-share-preview h2{margin:22px 0 0;font-family:'BV Unbounded',sans-serif;font-size:38px;line-height:1}.ds-share-preview p{color:#aebddd}"
+      "html": "<article class=\"ds-share-preview\"><div class=\"ds-preview-photo\"></div><div class=\"ds-preview-grade\"></div><div class=\"ds-preview-copy\"><small>1899 BARCELONA VISION</small><h2>МОЙ ПРОГНОЗ СЕЗОНА</h2><p>Ла Лига · Лига чемпионов · лидеры команды</p></div></article>",
+      "css": ".ds-share-preview{position:relative;aspect-ratio:4/5;overflow:hidden;padding:28px;border:1px solid rgba(135,166,237,.22);border-radius:20px;color:#f7f9ff;background:radial-gradient(circle at 10% 0%,rgba(54,111,245,.42),transparent 48%),linear-gradient(145deg,#0a1837,#071127 58%,#260b25);box-shadow:0 28px 90px rgba(0,0,0,.34);font-family:'BV Onest',sans-serif}.ds-preview-photo{position:absolute;inset:0;background:linear-gradient(135deg,#2f68df,#b71955);opacity:.24;filter:saturate(.82) contrast(1.08)}.ds-preview-grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,12,34,.22),rgba(4,12,34,.78) 46%,rgba(34,7,28,.94))}.ds-preview-copy{position:relative}.ds-share-preview small{color:#f5c84b;font-weight:800;letter-spacing:.12em}.ds-share-preview h2{margin:22px 0 0;font-family:'BV Unbounded',sans-serif;font-size:38px;line-height:1}.ds-share-preview p{color:#aebddd}"
+    },
+    {
+      "name": "Decision Option",
+      "kind": "button",
+      "refersTo": "decision-option",
+      "description": "Базовый вариант ответа, из которого собираются все рамки сложных механик.",
+      "html": "<button class=\"ds-decision-option\"><strong>Смешанный состав</strong><small>Баланс нагрузки</small></button>",
+      "css": ".ds-decision-option{min-height:54px;display:grid;align-content:center;gap:3px;border:1px solid rgba(139,169,232,.14);border-radius:7px;padding:8px 10px;color:#dce5f8;background:rgba(255,255,255,.03);font-family:'BV Onest',sans-serif;text-align:left;transition:180ms ease}.ds-decision-option:hover{border-color:rgba(92,143,255,.5);transform:translateY(-1px)}.ds-decision-option:focus-visible{outline:2px solid #f5c84b;outline-offset:2px}.ds-decision-option:active{border-color:rgba(226,54,113,.66);background:linear-gradient(135deg,rgba(45,104,223,.2),rgba(183,25,85,.2))}.ds-decision-option strong{font-size:12px}.ds-decision-option small{color:#aebddd;font-size:11px}"
+    },
+    {
+      "name": "Staged Decision Frame",
+      "kind": "custom",
+      "description": "Один сценарий за раз для домино и дедлайна с явным прогрессом.",
+      "html": "<section class=\"ds-decision-stage\"><div class=\"ds-stage-progress\"><span></span></div><small>ХОД 2 ИЗ 3</small><h3>Выберите главную покупку</h3><div><button>Хулиан Альварес</button><button>Лаутаро</button></div></section>",
+      "css": ".ds-decision-stage{min-height:300px;padding:22px;border:1px solid rgba(148,176,238,.17);border-radius:8px;color:#f7f9ff;background:radial-gradient(circle at 8% 50%,rgba(47,104,223,.1),transparent 42%),#0c1937;font-family:'BV Onest',sans-serif}.ds-stage-progress{height:7px;margin-bottom:34px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 29%,transparent 29% 35%)}.ds-stage-progress span{width:64%;height:100%;display:block;background:linear-gradient(90deg,#f5c84b,#b71955);transition:transform 240ms cubic-bezier(.16,1,.3,1)}.ds-decision-stage>small{color:#f5c84b;font-weight:800;letter-spacing:.12em}.ds-decision-stage h3{max-width:34ch;margin:12px 0 22px;font-family:'BV Unbounded',sans-serif;font-size:24px;line-height:1.18}.ds-decision-stage>div:last-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ds-decision-stage button{min-height:54px;border:1px solid rgba(139,169,232,.14);border-radius:7px;color:#f7f9ff;background:rgba(255,255,255,.03)}.ds-decision-stage button:hover{border-color:rgba(92,143,255,.5)}.ds-decision-stage button:focus-visible{outline:2px solid #f5c84b;outline-offset:2px}.ds-decision-stage button:active{border-color:#b71955}"
+    },
+    {
+      "name": "Photo Summary Rows",
+      "kind": "custom",
+      "refersTo": "summary-row",
+      "description": "Структурированный итог поверх приглушённой фотографии; тот же порядок переносится в PNG.",
+      "html": "<section class=\"ds-summary\"><strong>БАРСА УМНОГО БАЛАНСА</strong><div><small>ГЛАВНЫЙ СТИЛЬ</small><span>Контроль мяча</span></div><div><small>ГОРИЗОНТ ПРОЕКТА</small><span>Строить на три года</span></div></section>",
+      "css": ".ds-summary{display:grid;gap:6px;padding:22px;border-radius:20px;color:#f7f9ff;background:linear-gradient(180deg,rgba(4,12,34,.72),rgba(34,7,28,.94)),radial-gradient(circle at 25% 10%,#2f68df,#071126 55%,#b71955);font-family:'BV Onest',sans-serif}.ds-summary>strong{margin-bottom:6px;color:#f5c84b;font-family:'BV Unbounded',sans-serif;font-size:20px;line-height:1.08}.ds-summary>div{display:grid;gap:2px;padding:8px 10px;border:1px solid rgba(148,176,238,.14);border-radius:7px;background:rgba(3,11,30,.48)}.ds-summary small{color:#f5c84b;font-size:9px;font-weight:800;letter-spacing:.055em}.ds-summary span{font-size:12px;font-weight:700}.ds-summary:focus-within{outline:2px solid #f5c84b;outline-offset:2px}"
     },
     {
       "name": "Next Interactive",
@@ -74,15 +98,17 @@
   ],
   "narrative": {
     "northStar": "Ночная операторская",
-    "overview": "Интерфейс ощущается как пульт прямой футбольной трансляции на ночном стадионе. Пользователь не изучает приложение: он сразу выполняет одно действие, одновременно видит будущий постер и получает результат, который выглядит готовым к публикации. Мир серьёзный, кинематографичный и плотный.",
-    "keyCharacteristics": ["Одна страница — одно быстрое футбольное решение.", "Редактор и PNG-превью видны одновременно на широком экране.", "На телефоне управление всегда предшествует результату.", "Жёлтый используется как редкий сигнал, а не как постоянная заливка.", "Экспорт продолжает визуальный мир интерфейса."],
+    "overview": "Интерфейс ощущается как пульт прямой футбольной трансляции на ночном стадионе. Пользователь не изучает приложение: он сразу выполняет одно действие, одновременно видит будущий постер и получает результат, который выглядит готовым к публикации. Мир серьёзный, кинематографичный и плотный. Тёмно-синие панели, гранатовый свет и редкий жёлтый сигнал создают узнаваемую атмосферу «Барселоны», а широкая типографика сообщает редакционный футбольный характер без мультяшности. Разные механики получают собственную операторскую рамку — турнирную сетку, сценарную шкалу, финансовую консоль, дуэль или распределитель ресурса — но используют один язык состояния и один фотоподдержанный итог.",
+    "keyCharacteristics": ["Одна страница — одно быстрое футбольное решение.", "Редактор и PNG-превью видны одновременно на широком экране.", "На телефоне управление всегда предшествует результату.", "Каждая сложная механика получает различимый рабочий ритм без смены визуальной системы.", "Жёлтый используется как редкий сигнал, а не как постоянная заливка.", "Экранный итог и PNG используют одну фотографию, одну broadcast-градацию и одну иерархию данных."],
     "rules": [
       { "name": "The One Signal Rule", "body": "Жёлтый акцент ведёт взгляд к одному следующему решению; он не конкурирует с синим и гранатовым на больших площадях.", "section": "colors" },
       { "name": "The Night Match Rule", "body": "Светлые поверхности допустимы только внутри фотографий и спортивных материалов, но не как фон интерфейса.", "section": "colors" },
       { "name": "The One Display Voice Rule", "body": "Unbounded используется только там, где пользователь должен почувствовать название события или результата; элементы управления остаются в Onest.", "section": "typography" },
-      { "name": "The Flat Controls Rule", "body": "Обычные карточки не получают декоративных теней: состояние показывается границей, тоном и сдвигом не более 2px.", "section": "elevation" }
+      { "name": "The Mechanic Frame Rule", "body": "Отличие интерактивов строится компоновкой данных и темпом выбора, а не новой палитрой, шрифтом или декоративной темой для каждой страницы.", "section": "layout" },
+      { "name": "The Flat Controls Rule", "body": "Обычные карточки не получают декоративных теней: состояние показывается границей, тоном и сдвигом не более 2px.", "section": "elevation" },
+      { "name": "The One Result Rule", "body": "Превью до скачивания и сохранённый PNG обязаны рассказывать одну и ту же историю: одинаковая фотография, заголовок, ключевой вывод и порядок выбранных данных.", "section": "components" }
     ],
-    "dos": ["Do сохранять одно главное действие и один жёлтый визуальный сигнал на экран.", "Do показывать редактор и будущий экспорт рядом, когда ширина позволяет.", "Do оставлять в конце только один или два логичных следующих интерактива.", "Do использовать object-position: top для портретов игроков.", "Do поддерживать prefers-reduced-motion и видимый focus ring для каждого элемента управления."],
-    "donts": ["Don't превращать страницы в каталог, дашборд или вход в большую платформу.", "Don't добавлять регистрацию, Supabase или выдуманный адрес Telegram.", "Don't использовать мультяшные иллюстрации, белые SaaS-поверхности или набор разноцветных акцентов.", "Don't применять крупные радиусы и тени ко всем рабочим карточкам.", "Don't отделять стиль скачанного PNG от визуального мира страницы."]
+    "dos": ["Do сохранять одно главное действие и один жёлтый визуальный сигнал на экран.", "Do показывать редактор и будущий экспорт рядом, когда ширина позволяет.", "Do давать каждой сложной механике собственную информационную рамку внутри общей операторской грамматики.", "Do оставлять в конце только один или два логичных следующих интерактива.", "Do использовать object-position: top для портретов игроков.", "Do затемнять фото результата сине-гранатовой градацией до устойчивого контраста текста и повторять тот же источник изображения в PNG.", "Do поддерживать prefers-reduced-motion и видимый focus ring для каждого элемента управления."],
+    "donts": ["Don't превращать страницы в каталог, дашборд или вход в большую платформу.", "Don't добавлять регистрацию, Supabase или выдуманный адрес Telegram.", "Don't использовать мультяшные иллюстрации, белые SaaS-поверхности или набор разноцветных акцентов.", "Don't оформлять каждую механику как отдельную тему; различайте их структурой вопросов, прогрессом и плотностью.", "Don't применять крупные радиусы и тени ко всем рабочим карточкам.", "Don't отделять стиль скачанного PNG от визуального мира страницы."]
   }
 }

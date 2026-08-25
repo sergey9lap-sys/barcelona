@@ -31,7 +31,10 @@ export function RankingInteractive() {
   }
 
   return (
-    <InteractiveShell step="После матча · 40 секунд" title="Кто был лучшим?" description="Расставьте 16 игроков от лучшего к худшему. Слева места 1–8, справа 9–16 — так же будет выглядеть скачанная карточка." preview={
+    <InteractiveShell step="После матча · 40 секунд" title="Кто был лучшим?" description="Расставьте 16 игроков от лучшего к худшему. Слева места 1–8, справа 9–16 — так же будет выглядеть скачанная карточка." after={<NextActions actions={[
+      { href: "/transfer-vhod", label: "Предложить усиление", description: "Выберите, кого Барсе нужно купить первым" },
+      { href: "/la-masia", label: "Выбрать талант Ла Масии", description: "Кому следующим дать шанс в основе" },
+    ]} />} preview={
       <SharePreview title="Мой рейтинг игроков" subtitle={`${MATCH.home} — ${MATCH.away}`} compact>
         <div className="preview-list">{orderedPlayers.map((player, index) => <div key={player.id}><i>{index + 1}</i><Image src={player.image} alt="" width={28} height={28} /><span>{player.name}</span></div>)}</div>
       </SharePreview>
@@ -50,10 +53,6 @@ export function RankingInteractive() {
         </div>
         <DownloadButton onClick={download} busy={busy} />
       </section>
-      <NextActions actions={[
-        { href: "/transfer-vhod", label: "Предложить усиление", description: "Выберите, кого Барсе нужно купить первым" },
-        { href: "/la-masia", label: "Выбрать талант Ла Масии", description: "Кому следующим дать шанс в основе" },
-      ]} />
     </InteractiveShell>
   );
 }

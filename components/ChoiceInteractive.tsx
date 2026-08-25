@@ -42,7 +42,7 @@ export function ChoiceInteractive(props: Props) {
   }
 
   return (
-    <InteractiveShell step={props.step} title={props.title} description={props.description} preview={
+    <InteractiveShell step={props.step} title={props.title} description={props.description} after={<NextActions actions={props.next} />} preview={
       <SharePreview title={props.previewTitle} subtitle={props.previewSubtitle}>
         <div className="preview-choice"><div><Image src={selected.image} alt="" width={270} height={360} /><strong>{selected.name}</strong><span>{selected.meta}</span></div></div>
       </SharePreview>
@@ -59,7 +59,6 @@ export function ChoiceInteractive(props: Props) {
         </div>
         <DownloadButton onClick={download} busy={busy} />
       </section>
-      <NextActions actions={props.next} />
     </InteractiveShell>
   );
 }

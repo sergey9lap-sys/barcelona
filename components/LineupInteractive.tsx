@@ -12,6 +12,20 @@ import { exportLineupCard } from "@/lib/canvas";
 import { MATCH } from "@/lib/config";
 import { players } from "@/lib/data";
 
+type Props = {
+  step?: string;
+  title?: string;
+  description?: string;
+  previewTitle?: string;
+  previewSubtitle?: string;
+  exportTitle?: string;
+  exportKicker?: string;
+  fileName?: string;
+  unavailableIds?: string[];
+  requiredYouth?: number;
+  next?: Array<{ href: string; label: string; description: string }>;
+};
+
 const positions = [
   { x: 50, y: 90 },
   { x: 15, y: 75 }, { x: 38, y: 78 }, { x: 62, y: 78 }, { x: 85, y: 75 },
@@ -34,15 +48,34 @@ function arrangeLineup(selected: typeof players) {
   return [goalkeeper, ...defenders, ...midfielders.slice(0, 2), ...attackingThree, striker];
 }
 
-export function LineupInteractive() {
+export function LineupInteractive({
+  step = "Перед матчем · 30 секунд",
+  title = "Соберите состав Барсы",
+  description = "Выберите 11 футболистов. Мы автоматически расставим их в схеме 4‑2‑3‑1 и подготовим картинку для Telegram.",
+  previewTitle = "Мой состав на матч",
+  previewSubtitle = `${MATCH.opponent} — Барселона · ${MATCH.date}`,
+  exportTitle = "МОЙ СОСТАВ НА МАТЧ",
+  exportKicker = "BARÇA · MATCHDAY",
+  fileName = "barca-lineup",
+  unavailableIds = [],
+  requiredYouth = 0,
+  next = [
+    { href: "/prognoz", label: "Сделать прогноз", description: "Выберите исход и точный счёт матча" },
+    { href: "/fantasy", label: "Собрать Fantasy-пятёрку", description: "Пять игроков, бюджет и капитан ×2" },
+  ],
+}: Props = {}) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
-  const selectedPlayers = useMemo(() => selectedIds.map((id) => players.find((player) => player.id === id)).filter(Boolean) as typeof players, [selectedIds]);
+  const availablePlayers = useMemo(() => players.filter((player) => !unavailableIds.includes(player.id)), [unavailableIds]);
+  const selectedPlayers = useMemo(() => selectedIds.map((id) => availablePlayers.find((player) => player.id === id)).filter(Boolean) as typeof players, [availablePlayers, selectedIds]);
   const lineupPlayers = useMemo(() => arrangeLineup(selectedPlayers), [selectedPlayers]);
   const positionCounts = useMemo(() => selectedPlayers.reduce((counts, player) => ({ ...counts, [player.position]: counts[player.position] + 1 }), { GK: 0, DF: 0, MF: 0, FW: 0 }), [selectedPlayers]);
+  const youthIds = useMemo(() => new Set(["xavi-espart", "alvaro-cortes", "jordi-pesquer", "ebrima-tunkara", "orian-goren", "brian-farinas", "alex-gonzalez", "iker-rodriguez", "hamza"]), []);
+  const youthCount = selectedIds.filter((id) => youthIds.has(id)).length;
+  const complete = lineupPlayers.length === 11 && youthCount >= requiredYouth;
 
   function toggle(id: string) {
-    const player = players.find((item) => item.id === id)!;
+    const player = availablePlayers.find((item) => item.id === id)!;
     setSelectedIds((current) => {
       if (current.includes(id)) return current.filter((item) => item !== id);
       if (current.length >= 11 || positionCounts[player.position] >= positionLimits[player.position]) return current;
@@ -52,11 +85,11 @@ export function LineupInteractive() {
 
   async function download() {
     setBusy(true);
-    try { await exportLineupCard(lineupPlayers); } finally { setBusy(false); }
+    try { await exportLineupCard(lineupPlayers, fileName, exportTitle, exportKicker); } finally { setBusy(false); }
   }
 
   const preview = (
-    <SharePreview title="Мой состав на матч" subtitle={`${MATCH.opponent} — Барселона · ${MATCH.date}`}>
+    <SharePreview title={previewTitle} subtitle={previewSubtitle}>
       <div className="pitch-preview">
         {lineupPlayers.map((player, index) => (
           <div className="pitch-dot" key={player.id} style={{ left: `${positions[index].x}%`, top: `${positions[index].y}%` }}>
@@ -69,19 +102,15 @@ export function LineupInteractive() {
   );
 
   return (
-    <InteractiveShell step="Перед матчем · 30 секунд" title="Соберите состав Барсы" description="Выберите 11 футболистов. Мы автоматически расставим их в схеме 4‑2‑3‑1 и подготовим картинку для Telegram." preview={preview}>
+    <InteractiveShell step={step} title={title} description={description} preview={preview} after={<NextActions actions={next} />} afterVisible={complete}>
       <section className="control-panel">
         <div className="control-title"><h2>Выберите игроков</h2><span>{selectedIds.length} / 11</span></div>
         <div className="player-grid">
-          {players.map((player) => <PlayerTile key={player.id} player={player} selected={selectedIds.includes(player.id)} onClick={() => toggle(player.id)} disabled={!selectedIds.includes(player.id) && (selectedIds.length >= 11 || positionCounts[player.position] >= positionLimits[player.position])} />)}
+          {availablePlayers.map((player) => <PlayerTile key={player.id} player={player} selected={selectedIds.includes(player.id)} onClick={() => toggle(player.id)} disabled={!selectedIds.includes(player.id) && (selectedIds.length >= 11 || positionCounts[player.position] >= positionLimits[player.position])} />)}
         </div>
-        <p className="status-line"><strong>Схема:</strong> ВР {positionCounts.GK}/1 · ЗАЩ {positionCounts.DF}/4 · ПЗ {positionCounts.MF} · НАП {positionCounts.FW}. {lineupPlayers.length === 11 ? "Состав готов." : "Нужно минимум 2 полузащитника и 1 нападающий."}</p>
-        <DownloadButton onClick={download} disabled={lineupPlayers.length !== 11} busy={busy} />
+        <p className="status-line"><strong>Схема:</strong> ВР {positionCounts.GK}/1 · ЗАЩ {positionCounts.DF}/4 · ПЗ {positionCounts.MF} · НАП {positionCounts.FW}.{requiredYouth ? ` Молодые: ${youthCount}/${requiredYouth}.` : ""} {complete ? "Состав готов." : "Нужно минимум 2 полузащитника, 1 нападающий и выполнить условие сценария."}</p>
+        <DownloadButton onClick={download} disabled={!complete} busy={busy} />
       </section>
-      <NextActions actions={[
-        { href: "/prognoz", label: "Сделать прогноз", description: "Выберите исход и точный счёт матча" },
-        { href: "/fantasy", label: "Собрать Fantasy-пятёрку", description: "Пять игроков, бюджет и капитан ×2" },
-      ]} />
     </InteractiveShell>
   );
 }

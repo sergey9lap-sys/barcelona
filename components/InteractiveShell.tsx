@@ -10,9 +10,11 @@ type Props = {
   description: string;
   children: ReactNode;
   preview: ReactNode;
+  after?: ReactNode;
+  afterVisible?: boolean;
 };
 
-export function InteractiveShell({ step, title, description, children, preview }: Props) {
+export function InteractiveShell({ step, title, description, children, preview, after, afterVisible = true }: Props) {
   return (
     <main className="app-shell">
       <header className="brand-bar">
@@ -29,8 +31,8 @@ export function InteractiveShell({ step, title, description, children, preview }
       <section className="workspace">
         <div className="editor-column">
           <div className="page-heading">
-            <p>{step}</p>
             <h1>{title}</h1>
+            <p>{step}</p>
             <span>{description}</span>
           </div>
           {children}
@@ -42,6 +44,7 @@ export function InteractiveShell({ step, title, description, children, preview }
           </div>
         </aside>
       </section>
+      {after && afterVisible ? <div className="after-result">{after}</div> : null}
     </main>
   );
 }

@@ -10,6 +10,21 @@ type ChoiceCard = {
   fileName: string;
 };
 
+export type SummaryRow = {
+  label: string;
+  value: string;
+};
+
+type SummaryCard = {
+  title: string;
+  kicker: string;
+  headline?: string;
+  rows: SummaryRow[];
+  footerNote?: string;
+  image?: string;
+  fileName: string;
+};
+
 function fitText(context: CanvasRenderingContext2D, value: string, maxWidth: number) {
   if (context.measureText(value).width <= maxWidth) return value;
   let text = value;
@@ -29,6 +44,26 @@ function loadImage(src: string) {
     image.onerror = reject;
     image.src = src;
   });
+}
+
+function wrapText(context: CanvasRenderingContext2D, value: string, maxWidth: number, maxLines = 3) {
+  const words = value.split(/\s+/);
+  const lines: string[] = [];
+  let current = "";
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (context.measureText(candidate).width <= maxWidth) {
+      current = candidate;
+      continue;
+    }
+    if (current) lines.push(current);
+    current = word;
+    if (lines.length === maxLines - 1) break;
+  }
+  if (current && lines.length < maxLines) lines.push(current);
+  const consumed = lines.join(" ").length;
+  if (consumed < value.length && lines.length) lines[lines.length - 1] = fitText(context, `${lines[lines.length - 1]}…`, maxWidth);
+  return lines;
 }
 
 function createBase(title: string, kicker: string) {
@@ -51,12 +86,12 @@ function createBase(title: string, kicker: string) {
   context.fillStyle = blueGlow;
   context.fillRect(0, 0, 700, 650);
 
-  context.fillStyle = "#f5c84b";
-  context.font = '700 23px "Segoe UI", sans-serif';
-  context.fillText(kicker.toUpperCase(), 64, 72);
   context.fillStyle = "#ffffff";
   context.font = '750 44px "BV Unbounded", "Segoe UI", sans-serif';
-  context.fillText(fitText(context, title.toUpperCase(), 950), 64, 137);
+  context.fillText(fitText(context, title.toUpperCase(), 950), 64, 82);
+  context.fillStyle = "#f5c84b";
+  context.font = '700 20px "Segoe UI", sans-serif';
+  context.fillText(kicker.toUpperCase(), 64, 132);
   return { canvas, context };
 }
 
@@ -134,6 +169,77 @@ export async function exportChoiceCard(card: ChoiceCard) {
   await triggerDownload(canvas, card.fileName);
 }
 
+export async function exportSummaryCard(card: SummaryCard) {
+  await document.fonts.ready;
+  const { canvas, context } = createBase(card.title, card.kicker);
+  if (card.image) {
+    try {
+      const image = await loadImage(card.image);
+      const box = { x: 0, y: 165, w: 1080, h: 1035 };
+      const scale = Math.max(box.w / image.naturalWidth, box.h / image.naturalHeight);
+      const width = image.naturalWidth * scale;
+      const height = image.naturalHeight * scale;
+      context.save();
+      context.globalAlpha = .24;
+      context.drawImage(image, box.x + (box.w - width) / 2, box.y + (box.h - height) / 2, width, height);
+      context.restore();
+      const grade = context.createLinearGradient(0, box.y, 0, box.y + box.h);
+      grade.addColorStop(0, "rgba(4,12,34,.18)");
+      grade.addColorStop(.46, "rgba(4,12,34,.72)");
+      grade.addColorStop(1, "rgba(38,7,31,.94)");
+      context.fillStyle = grade;
+      context.fillRect(box.x, box.y, box.w, box.h);
+    } catch {}
+  }
+  const rows = card.rows.slice(0, 12);
+  const columns = rows.length > 6 ? 2 : 1;
+  const rowsPerColumn = Math.ceil(rows.length / columns);
+  const columnWidth = columns === 2 ? 458 : 952;
+  const gap = columns === 2 ? 36 : 0;
+  const startY = card.headline ? 314 : 250;
+  const availableHeight = 920 - (card.headline ? 86 : 0);
+  const rowHeight = Math.min(132, Math.floor(availableHeight / Math.max(1, rowsPerColumn)));
+
+  if (card.headline) {
+    context.fillStyle = "#f5c84b";
+    context.font = '750 30px "BV Unbounded", "Segoe UI", sans-serif';
+    context.textAlign = "left";
+    context.fillText(fitText(context, card.headline.toUpperCase(), 930), 64, 248);
+  }
+
+  rows.forEach((row, index) => {
+    const column = Math.floor(index / rowsPerColumn);
+    const rowIndex = index % rowsPerColumn;
+    const x = 64 + column * (columnWidth + gap);
+    const y = startY + rowIndex * rowHeight;
+
+    roundedRect(context, x, y, columnWidth, rowHeight - 12, 18);
+    context.fillStyle = "rgba(5,15,40,.78)";
+    context.fill();
+    context.strokeStyle = "rgba(137,170,255,.2)";
+    context.lineWidth = 2;
+    context.stroke();
+
+    context.textAlign = "left";
+    context.fillStyle = "#f5c84b";
+    context.font = '750 15px "Segoe UI", sans-serif';
+    context.fillText(fitText(context, row.label.toUpperCase(), columnWidth - 40), x + 20, y + 32);
+    context.fillStyle = "#ffffff";
+    context.font = `${columns === 2 ? 700 : 750} ${columns === 2 ? 20 : 25}px "Segoe UI", sans-serif`;
+    const lines = wrapText(context, row.value, columnWidth - 40, columns === 2 ? 2 : 3);
+    lines.forEach((line, lineIndex) => context.fillText(line, x + 20, y + 65 + lineIndex * 26));
+  });
+
+  if (card.footerNote) {
+    context.fillStyle = "rgba(220,231,255,.68)";
+    context.font = '600 17px "Segoe UI", sans-serif';
+    context.textAlign = "left";
+    context.fillText(fitText(context, card.footerNote, 930), 64, 1218);
+  }
+  drawFooter(context);
+  await triggerDownload(canvas, card.fileName);
+}
+
 export async function exportPlayerListCard(title: string, kicker: string, orderedPlayers: Player[], fileName: string) {
   await document.fonts.ready;
   const { canvas, context } = createBase(title, kicker);
@@ -199,9 +305,9 @@ const lineupPositions = [
   { x: 50, y: 18 },
 ];
 
-export async function exportLineupCard(selectedPlayers: Player[], fileName = "barca-lineup") {
+export async function exportLineupCard(selectedPlayers: Player[], fileName = "barca-lineup", title = "МОЙ СОСТАВ НА МАТЧ", kicker = "BARÇA · MATCHDAY") {
   await document.fonts.ready;
-  const { canvas, context } = createBase("МОЙ СОСТАВ НА МАТЧ", "BARÇA · MATCHDAY");
+  const { canvas, context } = createBase(title, kicker);
   const field = await loadImage("/background/tactical-field-original.png");
   context.save();
   roundedRect(context, 112, 205, 856, 1000, 30);
