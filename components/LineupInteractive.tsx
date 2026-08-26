@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { DownloadButton } from "@/components/DownloadButton";
 import { InteractiveShell } from "@/components/InteractiveShell";
@@ -86,14 +86,40 @@ export function LineupInteractive({
     setPitchPositions((positions) => ({ ...positions, [id]: slot }));
   }
 
-  function movePlayer(id: string, clientX: number, clientY: number) {
+  const movePlayer = useCallback((id: string, clientX: number, clientY: number) => {
     const field = pitchRef.current;
     if (!field) return;
     const bounds = field.getBoundingClientRect();
     const x = Math.min(92, Math.max(8, ((clientX - bounds.left) / bounds.width) * 100));
     const y = Math.min(93, Math.max(7, ((clientY - bounds.top) / bounds.height) * 100));
     setPitchPositions((positions) => ({ ...positions, [id]: { x, y } }));
-  }
+  }, []);
+
+  useEffect(() => {
+    if (!draggingId) return;
+
+    const previousUserSelect = document.body.style.userSelect;
+    document.body.style.userSelect = "none";
+
+    const handleMove = (event: PointerEvent) => {
+      event.preventDefault();
+      movePlayer(draggingId, event.clientX, event.clientY);
+    };
+    const handleEnd = () => setDraggingId(null);
+
+    window.addEventListener("pointermove", handleMove, { passive: false });
+    window.addEventListener("pointerup", handleEnd);
+    window.addEventListener("pointercancel", handleEnd);
+    window.addEventListener("blur", handleEnd);
+
+    return () => {
+      document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleEnd);
+      window.removeEventListener("pointercancel", handleEnd);
+      window.removeEventListener("blur", handleEnd);
+    };
+  }, [draggingId, movePlayer]);
 
   function nudgePlayer(id: string, dx: number, dy: number) {
     setPitchPositions((positions) => {
@@ -124,18 +150,11 @@ export function LineupInteractive({
             style={{ left: `${position.x}%`, top: `${position.y}%` }}
             aria-label={`${player.name}. Перетащите по полю или перемещайте стрелками`}
             onPointerDown={(event) => {
-              event.currentTarget.setPointerCapture(event.pointerId);
+              event.preventDefault();
               setDraggingId(player.id);
               movePlayer(player.id, event.clientX, event.clientY);
             }}
-            onPointerMove={(event) => {
-              if (event.currentTarget.hasPointerCapture(event.pointerId)) movePlayer(player.id, event.clientX, event.clientY);
-            }}
-            onPointerUp={(event) => {
-              if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-              setDraggingId(null);
-            }}
-            onPointerCancel={() => setDraggingId(null)}
+            onDragStart={(event) => event.preventDefault()}
             onKeyDown={(event) => {
               const movement = event.shiftKey ? 5 : 2;
               if (event.key === "ArrowLeft") { event.preventDefault(); nudgePlayer(player.id, -movement, 0); }
@@ -144,7 +163,7 @@ export function LineupInteractive({
               if (event.key === "ArrowDown") { event.preventDefault(); nudgePlayer(player.id, 0, movement); }
             }}
           >
-            <Image src={player.image} alt="" width={44} height={44} />
+            <Image src={player.image} alt="" width={44} height={44} draggable={false} />
             <span>{player.name}</span>
           </button>
         );})}

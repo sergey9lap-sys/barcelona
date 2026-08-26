@@ -364,6 +364,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .pitch-dot:hover { z-index: 4; filter: brightness(1.12); transform: translate(-50%, -50%) scale(1.04); }
 .pitch-dot:active, .pitch-dot.is-dragging { z-index: 5; cursor: grabbing; filter: brightness(1.16); transform: translate(-50%, -50%) scale(1.08); }
 .pitch-dot:focus-visible { z-index: 5; border-radius: 7px; outline-offset: 4px; }
+.pitch-dot img, .pitch-dot span { pointer-events: none; }
 .pitch-dot img { width: 38px; height: 38px; border: 2px solid rgba(255,255,255,.44); border-radius: 999px; object-fit: cover; object-position: top; background: white; }
 .pitch-dot span { display: block; overflow: hidden; margin-top: -2px; padding: 3px 4px; border-radius: 5px; color: white; background: rgba(3,11,30,.88); font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
 
