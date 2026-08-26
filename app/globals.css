@@ -357,6 +357,10 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 
 .lineup-shell { width: min(1600px, 100%); }
 .lineup-shell .workspace { grid-template-columns: minmax(620px, 1fr) minmax(520px, .86fr); gap: clamp(28px, 3vw, 48px); }
+.lineup-shell .editor-column { display: contents; }
+.lineup-shell .page-heading { grid-column: 1 / -1; margin-bottom: 0; }
+.lineup-shell .editor-column > .control-panel { grid-column: 1; grid-row: 2; }
+.lineup-shell .preview-column { min-width: 0; grid-column: 2; grid-row: 2; }
 .pitch-preview { position: relative; height: 100%; overflow: hidden; border-radius: 12px; background: url('/background/tactical-field-original.png') center / cover; }
 .pitch-drag-surface { position: absolute; inset: 0; touch-action: none; }
 .pitch-drag-hint { position: absolute; z-index: 3; top: 10px; left: 50%; padding: 6px 10px; border: 1px solid rgba(245,200,75,.28); border-radius: 7px; color: #f8e6a8; background: rgba(3,11,30,.78); font-size: 10px; font-weight: 750; letter-spacing: .04em; transform: translateX(-50%); white-space: nowrap; pointer-events: none; }
