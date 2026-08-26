@@ -305,7 +305,13 @@ const lineupPositions = [
   { x: 50, y: 18 },
 ];
 
-export async function exportLineupCard(selectedPlayers: Player[], fileName = "barca-lineup", title = "МОЙ СОСТАВ НА МАТЧ", kicker = "BARÇA · MATCHDAY") {
+export async function exportLineupCard(
+  selectedPlayers: Player[],
+  fileName = "barca-lineup",
+  title = "МОЙ СОСТАВ НА МАТЧ",
+  kicker = "BARÇA · MATCHDAY",
+  customPositions?: Record<string, { x: number; y: number }>,
+) {
   await document.fonts.ready;
   const { canvas, context } = createBase(title, kicker);
   const field = await loadImage("/background/tactical-field-original.png");
@@ -321,7 +327,7 @@ export async function exportLineupCard(selectedPlayers: Player[], fileName = "ba
     try { return await loadImage(player.image); } catch { return null; }
   }));
   selectedPlayers.forEach((player, index) => {
-    const position = lineupPositions[index];
+    const position = customPositions?.[player.id] ?? lineupPositions[index];
     if (!position) return;
     const x = 112 + (position.x / 100) * 856;
     const y = 205 + (position.y / 100) * 1000;

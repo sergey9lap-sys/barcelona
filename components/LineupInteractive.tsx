@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { DownloadButton } from "@/components/DownloadButton";
 import { InteractiveShell } from "@/components/InteractiveShell";
@@ -26,32 +26,21 @@ type Props = {
   next?: Array<{ href: string; label: string; description: string }>;
 };
 
-const positions = [
-  { x: 50, y: 90 },
-  { x: 15, y: 75 }, { x: 38, y: 78 }, { x: 62, y: 78 }, { x: 85, y: 75 },
-  { x: 35, y: 57 }, { x: 65, y: 57 },
-  { x: 17, y: 34 }, { x: 50, y: 42 }, { x: 83, y: 34 },
-  { x: 50, y: 17 },
-];
+type PitchPosition = { x: number; y: number };
+
+const formationSlots: Record<(typeof players)[number]["position"], PitchPosition[]> = {
+  GK: [{ x: 50, y: 90 }],
+  DF: [{ x: 15, y: 75 }, { x: 38, y: 78 }, { x: 62, y: 78 }, { x: 85, y: 75 }],
+  MF: [{ x: 35, y: 57 }, { x: 65, y: 57 }, { x: 50, y: 42 }, { x: 17, y: 34 }, { x: 83, y: 34 }],
+  FW: [{ x: 50, y: 17 }, { x: 17, y: 34 }, { x: 83, y: 34 }, { x: 50, y: 42 }],
+};
 
 const positionLimits = { GK: 1, DF: 4, MF: 5, FW: 4 } as const;
-
-function arrangeLineup(selected: typeof players) {
-  const goalkeeper = selected.find((player) => player.position === "GK");
-  const defenders = selected.filter((player) => player.position === "DF");
-  const midfielders = selected.filter((player) => player.position === "MF");
-  const forwards = selected.filter((player) => player.position === "FW");
-  const striker = forwards.at(-1);
-  const attackingThree = [...midfielders.slice(2), ...forwards.slice(0, -1)].slice(0, 3);
-
-  if (!goalkeeper || defenders.length !== 4 || midfielders.length < 2 || !striker || attackingThree.length !== 3) return [];
-  return [goalkeeper, ...defenders, ...midfielders.slice(0, 2), ...attackingThree, striker];
-}
 
 export function LineupInteractive({
   step = "Перед матчем · 30 секунд",
   title = "Соберите состав Барсы",
-  description = "Выберите 11 футболистов. Мы автоматически расставим их в схеме 4‑2‑3‑1 и подготовим картинку для Telegram.",
+  description = "Выберите 11 футболистов: каждый сразу появится на поле. Перетащите игроков в нужные зоны и скачайте готовую картинку для Telegram.",
   previewTitle = "Мой состав на матч",
   previewSubtitle = `${MATCH.opponent} — Барселона · ${MATCH.date}`,
   exportTitle = "МОЙ СОСТАВ НА МАТЧ",
@@ -65,44 +54,107 @@ export function LineupInteractive({
   ],
 }: Props = {}) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [pitchPositions, setPitchPositions] = useState<Record<string, PitchPosition>>({});
+  const [draggingId, setDraggingId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const pitchRef = useRef<HTMLDivElement>(null);
   const availablePlayers = useMemo(() => players.filter((player) => !unavailableIds.includes(player.id)), [unavailableIds]);
   const selectedPlayers = useMemo(() => selectedIds.map((id) => availablePlayers.find((player) => player.id === id)).filter(Boolean) as typeof players, [availablePlayers, selectedIds]);
-  const lineupPlayers = useMemo(() => arrangeLineup(selectedPlayers), [selectedPlayers]);
   const positionCounts = useMemo(() => selectedPlayers.reduce((counts, player) => ({ ...counts, [player.position]: counts[player.position] + 1 }), { GK: 0, DF: 0, MF: 0, FW: 0 }), [selectedPlayers]);
   const youthIds = useMemo(() => new Set(["xavi-espart", "alvaro-cortes", "jordi-pesquer", "ebrima-tunkara", "orian-goren", "brian-farinas", "alex-gonzalez", "iker-rodriguez", "hamza"]), []);
   const youthCount = selectedIds.filter((id) => youthIds.has(id)).length;
-  const complete = lineupPlayers.length === 11 && youthCount >= requiredYouth;
+  const complete = selectedIds.length === 11 && positionCounts.GK === 1 && positionCounts.DF === 4 && positionCounts.MF >= 2 && positionCounts.FW >= 1 && youthCount >= requiredYouth;
 
   function toggle(id: string) {
     const player = availablePlayers.find((item) => item.id === id)!;
-    setSelectedIds((current) => {
-      if (current.includes(id)) return current.filter((item) => item !== id);
-      if (current.length >= 11 || positionCounts[player.position] >= positionLimits[player.position]) return current;
-      return [...current, id];
+    if (selectedIds.includes(id)) {
+      setSelectedIds((current) => current.filter((item) => item !== id));
+      setPitchPositions((positions) => {
+        const next = { ...positions };
+        delete next[id];
+        return next;
+      });
+      return;
+    }
+    if (selectedIds.length >= 11 || positionCounts[player.position] >= positionLimits[player.position]) return;
+
+    const occupied = Object.values(pitchPositions);
+    const slot = formationSlots[player.position].find((candidate) =>
+      !occupied.some((position) => Math.abs(position.x - candidate.x) < 1 && Math.abs(position.y - candidate.y) < 1),
+    ) ?? formationSlots[player.position].at(-1)!;
+    setSelectedIds((current) => [...current, id]);
+    setPitchPositions((positions) => ({ ...positions, [id]: slot }));
+  }
+
+  function movePlayer(id: string, clientX: number, clientY: number) {
+    const field = pitchRef.current;
+    if (!field) return;
+    const bounds = field.getBoundingClientRect();
+    const x = Math.min(92, Math.max(8, ((clientX - bounds.left) / bounds.width) * 100));
+    const y = Math.min(93, Math.max(7, ((clientY - bounds.top) / bounds.height) * 100));
+    setPitchPositions((positions) => ({ ...positions, [id]: { x, y } }));
+  }
+
+  function nudgePlayer(id: string, dx: number, dy: number) {
+    setPitchPositions((positions) => {
+      const current = positions[id];
+      if (!current) return positions;
+      return { ...positions, [id]: { x: Math.min(92, Math.max(8, current.x + dx)), y: Math.min(93, Math.max(7, current.y + dy)) } };
     });
   }
 
   async function download() {
     setBusy(true);
-    try { await exportLineupCard(lineupPlayers, fileName, exportTitle, exportKicker); } finally { setBusy(false); }
+    try { await exportLineupCard(selectedPlayers, fileName, exportTitle, exportKicker, pitchPositions); } finally { setBusy(false); }
   }
 
   const preview = (
     <SharePreview title={previewTitle} subtitle={previewSubtitle}>
       <div className="pitch-preview">
-        {lineupPlayers.map((player, index) => (
-          <div className="pitch-dot" key={player.id} style={{ left: `${positions[index].x}%`, top: `${positions[index].y}%` }}>
+        <div className="pitch-drag-hint">Перетаскивайте игроков</div>
+        <div className="pitch-drag-surface" ref={pitchRef}>
+        {selectedPlayers.map((player) => {
+          const position = pitchPositions[player.id];
+          if (!position) return null;
+          return (
+          <button
+            type="button"
+            className={`pitch-dot${draggingId === player.id ? " is-dragging" : ""}`}
+            key={player.id}
+            style={{ left: `${position.x}%`, top: `${position.y}%` }}
+            aria-label={`${player.name}. Перетащите по полю или перемещайте стрелками`}
+            onPointerDown={(event) => {
+              event.currentTarget.setPointerCapture(event.pointerId);
+              setDraggingId(player.id);
+              movePlayer(player.id, event.clientX, event.clientY);
+            }}
+            onPointerMove={(event) => {
+              if (event.currentTarget.hasPointerCapture(event.pointerId)) movePlayer(player.id, event.clientX, event.clientY);
+            }}
+            onPointerUp={(event) => {
+              if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+              setDraggingId(null);
+            }}
+            onPointerCancel={() => setDraggingId(null)}
+            onKeyDown={(event) => {
+              const movement = event.shiftKey ? 5 : 2;
+              if (event.key === "ArrowLeft") { event.preventDefault(); nudgePlayer(player.id, -movement, 0); }
+              if (event.key === "ArrowRight") { event.preventDefault(); nudgePlayer(player.id, movement, 0); }
+              if (event.key === "ArrowUp") { event.preventDefault(); nudgePlayer(player.id, 0, -movement); }
+              if (event.key === "ArrowDown") { event.preventDefault(); nudgePlayer(player.id, 0, movement); }
+            }}
+          >
             <Image src={player.image} alt="" width={44} height={44} />
             <span>{player.name}</span>
-          </div>
-        ))}
+          </button>
+        );})}
+        </div>
       </div>
     </SharePreview>
   );
 
   return (
-    <InteractiveShell step={step} title={title} description={description} preview={preview} after={<NextActions actions={next} />} afterVisible={complete}>
+    <InteractiveShell className="lineup-shell" step={step} title={title} description={description} preview={preview} after={<NextActions actions={next} />} afterVisible={complete}>
       <section className="control-panel">
         <div className="control-title"><h2>Выберите игроков</h2><span>{selectedIds.length} / 11</span></div>
         <div className="player-grid">

@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { BRAND_NAME } from "@/lib/config";
 
 type Props = {
+  className?: string;
   step: string;
   title: string;
   description: string;
@@ -14,9 +15,9 @@ type Props = {
   afterVisible?: boolean;
 };
 
-export function InteractiveShell({ step, title, description, children, preview, after, afterVisible = true }: Props) {
+export function InteractiveShell({ className, step, title, description, children, preview, after, afterVisible = true }: Props) {
   return (
-    <main className="app-shell">
+    <main className={`app-shell${className ? ` ${className}` : ""}`}>
       <header className="brand-bar">
         <Link className="brand-lockup" href="/sostav" aria-label="На стартовую страницу">
           <Image src="/club/barca.png" alt="" width={42} height={42} priority />
