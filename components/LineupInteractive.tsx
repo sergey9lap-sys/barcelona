@@ -60,7 +60,7 @@ export function LineupInteractive({
   const availablePlayers = useMemo(() => players.filter((player) => !unavailableIds.includes(player.id)), [unavailableIds]);
   const selectedPlayers = useMemo(() => selectedIds.map((id) => availablePlayers.find((player) => player.id === id)).filter(Boolean) as typeof players, [availablePlayers, selectedIds]);
   const positionCounts = useMemo(() => selectedPlayers.reduce((counts, player) => ({ ...counts, [player.position]: counts[player.position] + 1 }), { GK: 0, DF: 0, MF: 0, FW: 0 }), [selectedPlayers]);
-  const youthIds = useMemo(() => new Set(["xavi-espart", "alvaro-cortes", "jordi-pesquer", "ebrima-tunkara", "orian-goren", "brian-farinas", "alex-gonzalez", "iker-rodriguez", "hamza"]), []);
+  const youthIds = useMemo(() => new Set(["xavi-espart", "jordi-pesquer", "ebrima-tunkara", "orian-goren", "brian-farinas", "alex-gonzalez", "iker-rodriguez", "hamza"]), []);
   const youthCount = selectedIds.filter((id) => youthIds.has(id)).length;
   const complete = selectedIds.length === 11 && positionCounts.GK === 1 && positionCounts.DF === 4 && positionCounts.MF >= 2 && positionCounts.FW >= 1 && youthCount >= requiredYouth;
 

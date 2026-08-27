@@ -31,8 +31,7 @@ export const players: Player[] = [
   { id: "gordon", name: "Энтони Гордон", number: 17, position: "FW", image: "/players/gordon-2026.jpg", fantasyCost: 10 },
   { id: "adeyemi", name: "Карим Адейеми", number: 14, position: "FW", image: "/players/adeyemi-2026.jpg", fantasyCost: 10 },
   { id: "bisiwu", name: "Джесси Бисиву", number: 27, position: "FW", image: "/players/bisiwu-2026.jpg", fantasyCost: 8 },
-  { id: "xavi-espart", name: "Хави Эспарт", number: 36, position: "DF", image: "/players/xavi-espart-official-2026.jpg", fantasyCost: 4 },
-  { id: "alvaro-cortes", name: "Альваро Кортес", number: 26, position: "DF", image: "/la-masia/alvaro-cortes.jpg", fantasyCost: 4 },
+  { id: "xavi-espart", name: "Хави Эспарт", number: 12, position: "DF", image: "/players/xavi-espart-official-2026.jpg", fantasyCost: 4 },
   { id: "jordi-pesquer", name: "Жорди Пескер", number: 33, position: "DF", image: "/la-masia/jordi-pesquer.jpg", fantasyCost: 4 },
   { id: "ebrima-tunkara", name: "Эбрима Тункара", number: null, position: "MF", image: "/la-masia/ebrima-tunkara.jpg", fantasyCost: 4 },
   { id: "orian-goren", name: "Ориан Горен", number: null, position: "MF", image: "/la-masia/orian-goren.jpg", fantasyCost: 4 },
@@ -48,7 +47,7 @@ export const rankingPlayers = players.filter((player) => [
 ].includes(player.id));
 
 export const laMasiaPlayers = players.filter((player) => [
-  "xavi-espart", "alvaro-cortes", "jordi-pesquer", "ebrima-tunkara", "orian-goren",
+  "xavi-espart", "jordi-pesquer", "ebrima-tunkara", "orian-goren",
   "brian-farinas", "alex-gonzalez", "iker-rodriguez", "hamza",
 ].includes(player.id));
 

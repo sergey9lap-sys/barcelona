@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 import { DownloadButton } from "@/components/DownloadButton";
@@ -9,9 +10,9 @@ import { exportChoiceCard } from "@/lib/canvas";
 import { MATCH } from "@/lib/config";
 
 const outcomes = [
-  { id: "win", label: "Победа Барсы", detail: "Забираем три очка" },
-  { id: "draw", label: "Ничья", detail: "Очки будут разделены" },
-  { id: "loss", label: "Поражение", detail: "Соперник окажется сильнее" },
+  { id: "win", code: "П1", label: "Победа Барсы", detail: "Три очка остаются дома" },
+  { id: "draw", code: "X", label: "Ничья", detail: "Команды делят очки" },
+  { id: "loss", code: "П2", label: "Поражение", detail: "Атлетик забирает матч" },
 ];
 
 export function PredictionInteractive() {
@@ -43,13 +44,29 @@ export function PredictionInteractive() {
   return (
     <InteractiveShell className="prediction-shell" step="Перед матчем · 20 секунд" title="Дайте свой прогноз" description="Выберите исход и точный счёт. Никакой регистрации — только ваш прогноз и готовая карточка." preview={
       <SharePreview title="Мой прогноз" subtitle={`${MATCH.home} — ${MATCH.away} · ${MATCH.time}`}>
-        <div className="preview-score"><small>{selectedOutcome.label}</small><strong>{homeScore} : {awayScore}</strong><span>{MATCH.time}</span></div>
+        <div className="preview-score">
+          <small>{selectedOutcome.label}</small>
+          <strong>{homeScore} : {awayScore}</strong>
+          <div className="preview-score-teams"><span>{MATCH.home}</span><i>—</i><span>{MATCH.away}</span></div>
+          <b>{MATCH.time}</b>
+        </div>
       </SharePreview>
     }>
       <section className="control-panel">
-        <div className="control-title"><h2>Исход матча</h2><span>1 выбор</span></div>
+        <div className="prediction-matchup" aria-label={`${MATCH.home} против ${MATCH.away}, начало в ${MATCH.time}`}>
+          <div className="prediction-team">
+            <Image src="/club/barca.png" alt="" width={54} height={54} />
+            <span><small>Хозяева</small><strong>{MATCH.home}</strong></span>
+          </div>
+          <div className="prediction-kickoff"><small>Начало матча</small><strong>{MATCH.time}</strong><span>Камп Ноу</span></div>
+          <div className="prediction-team is-away">
+            <Image src="/club/athletic-club.gif" alt="Эмблема Athletic Club" width={58} height={58} unoptimized />
+            <span><small>Гости</small><strong>{MATCH.away}</strong></span>
+          </div>
+        </div>
+        <div className="control-title"><h2>Как закончится матч?</h2><span>Выберите исход</span></div>
         <div className="choice-grid">
-          {outcomes.map((item) => <button key={item.id} className={`choice-card${outcome === item.id ? " is-selected" : ""}`} onClick={() => chooseOutcome(item.id)} type="button"><span><strong>{item.label}</strong><small>{item.detail}</small></span></button>)}
+          {outcomes.map((item) => <button key={item.id} className={`choice-card${outcome === item.id ? " is-selected" : ""}`} onClick={() => chooseOutcome(item.id)} type="button" aria-pressed={outcome === item.id}><b>{item.code}</b><span><strong>{item.label}</strong><small>{item.detail}</small></span></button>)}
         </div>
       </section>
       <section className="control-panel">
