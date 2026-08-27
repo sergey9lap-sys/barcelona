@@ -8,4 +8,8 @@ export const MATCH = {
   home: "Барселона",
   away: "Атлетик Бильбао",
   time: "22:00",
+  venue: "Камп Ноу",
+  competition: "Ла Лига",
+  competitionStage: "1-й тур · 2026/27",
+  competitionLogo: "/competition/laliga.png",
 };

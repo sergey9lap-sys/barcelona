@@ -37,7 +37,7 @@ export function PredictionInteractive() {
   async function download() {
     setBusy(true);
     try {
-      await exportChoiceCard({ title: "МОЙ ПРОГНОЗ НА МАТЧ", kicker: `${MATCH.home} — ${MATCH.away}`, primary: `${homeScore} : ${awayScore}`, secondary: selectedOutcome.label, fileName: "barca-match-prediction" });
+      await exportChoiceCard({ title: "МОЙ ПРОГНОЗ НА МАТЧ", kicker: `${MATCH.competition} · ${MATCH.home} — ${MATCH.away}`, primary: `${homeScore} : ${awayScore}`, secondary: `${selectedOutcome.label} · ${MATCH.time}`, fileName: "barca-match-prediction" });
     } finally { setBusy(false); }
   }
 
@@ -45,6 +45,7 @@ export function PredictionInteractive() {
     <InteractiveShell className="prediction-shell" step="Перед матчем · 20 секунд" title="Дайте свой прогноз" description="Выберите исход и точный счёт. Никакой регистрации — только ваш прогноз и готовая карточка." preview={
       <SharePreview title="Мой прогноз" subtitle={`${MATCH.home} — ${MATCH.away} · ${MATCH.time}`}>
         <div className="preview-score">
+          <div className="preview-competition"><Image src={MATCH.competitionLogo} alt={MATCH.competition} width={104} height={35} /></div>
           <small>{selectedOutcome.label}</small>
           <strong>{homeScore} : {awayScore}</strong>
           <div className="preview-score-teams"><span>{MATCH.home}</span><i>—</i><span>{MATCH.away}</span></div>
@@ -54,13 +55,17 @@ export function PredictionInteractive() {
     }>
       <section className="control-panel">
         <div className="prediction-matchup" aria-label={`${MATCH.home} против ${MATCH.away}, начало в ${MATCH.time}`}>
+          <div className="match-competition">
+            <Image src={MATCH.competitionLogo} alt={MATCH.competition} width={98} height={33} />
+            <span>{MATCH.competitionStage}</span>
+          </div>
           <div className="prediction-team">
             <Image src="/club/barca.png" alt="" width={54} height={54} />
             <span><small>Хозяева</small><strong>{MATCH.home}</strong></span>
           </div>
-          <div className="prediction-kickoff"><small>Начало матча</small><strong>{MATCH.time}</strong><span>Камп Ноу</span></div>
+          <div className="prediction-kickoff"><small>Начало матча</small><strong>{MATCH.time}</strong><span>{MATCH.venue}</span></div>
           <div className="prediction-team is-away">
-            <Image src="/club/athletic-club.gif" alt="Эмблема Athletic Club" width={58} height={58} unoptimized />
+            <Image src="/club/athletic-club.png" alt="Эмблема Athletic Club" width={58} height={58} />
             <span><small>Гости</small><strong>{MATCH.away}</strong></span>
           </div>
         </div>
