@@ -42,7 +42,7 @@ export function LineupInteractive({
   title = "Соберите состав Барсы",
   description = "Выберите 11 футболистов: каждый сразу появится на поле. Перетащите игроков в нужные зоны и скачайте готовую картинку для Telegram.",
   previewTitle = "Мой состав на матч",
-  previewSubtitle = `${MATCH.opponent} — Барселона · ${MATCH.date}`,
+  previewSubtitle = `${MATCH.home} — ${MATCH.away} · ${MATCH.time}`,
   exportTitle = "МОЙ СОСТАВ НА МАТЧ",
   exportKicker = "BARÇA · MATCHDAY",
   fileName = "barca-lineup",

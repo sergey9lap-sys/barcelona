@@ -15,16 +15,18 @@ const outcomes = [
 ];
 
 export function PredictionInteractive() {
-  const [homeScore, setHomeScore] = useState(1);
-  const [awayScore, setAwayScore] = useState(3);
+  const barcaIsHome = MATCH.home === "Барселона";
+  const [homeScore, setHomeScore] = useState(barcaIsHome ? 2 : 1);
+  const [awayScore, setAwayScore] = useState(barcaIsHome ? 1 : 2);
   const [busy, setBusy] = useState(false);
-  const outcome = awayScore > homeScore ? "win" : awayScore === homeScore ? "draw" : "loss";
+  const barcaWon = barcaIsHome ? homeScore > awayScore : awayScore > homeScore;
+  const outcome = homeScore === awayScore ? "draw" : barcaWon ? "win" : "loss";
   const selectedOutcome = outcomes.find((item) => item.id === outcome)!;
 
   function chooseOutcome(nextOutcome: string) {
-    if (nextOutcome === "win") { setHomeScore(1); setAwayScore(2); }
+    if (nextOutcome === "win") { setHomeScore(barcaIsHome ? 2 : 1); setAwayScore(barcaIsHome ? 1 : 2); }
     if (nextOutcome === "draw") { setHomeScore(1); setAwayScore(1); }
-    if (nextOutcome === "loss") { setHomeScore(2); setAwayScore(1); }
+    if (nextOutcome === "loss") { setHomeScore(barcaIsHome ? 1 : 2); setAwayScore(barcaIsHome ? 2 : 1); }
   }
 
   function clampScore(value: number) {
@@ -39,8 +41,8 @@ export function PredictionInteractive() {
   }
 
   return (
-    <InteractiveShell step="Перед матчем · 20 секунд" title="Дайте свой прогноз" description="Выберите исход и точный счёт. Никакой регистрации — только ваш прогноз и готовая карточка." preview={
-      <SharePreview title="Мой прогноз" subtitle={`${MATCH.home} — ${MATCH.away} · ${MATCH.date}`}>
+    <InteractiveShell className="prediction-shell" step="Перед матчем · 20 секунд" title="Дайте свой прогноз" description="Выберите исход и точный счёт. Никакой регистрации — только ваш прогноз и готовая карточка." preview={
+      <SharePreview title="Мой прогноз" subtitle={`${MATCH.home} — ${MATCH.away} · ${MATCH.time}`}>
         <div className="preview-score"><small>{selectedOutcome.label}</small><strong>{homeScore} : {awayScore}</strong><span>{MATCH.time}</span></div>
       </SharePreview>
     }>

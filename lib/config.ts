@@ -4,9 +4,8 @@ export const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "1899 Barcelona 
 export const TELEGRAM_HANDLE = process.env.NEXT_PUBLIC_TELEGRAM_HANDLE || "";
 
 export const MATCH = {
-  opponent: "Эльче",
-  home: "Эльче",
-  away: "Барселона",
-  date: "23 августа 2026",
-  time: "22:30",
+  opponent: "Атлетик Бильбао",
+  home: "Барселона",
+  away: "Атлетик Бильбао",
+  time: "22:00",
 };
