@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import { DownloadButton } from "@/components/DownloadButton";
 import { InteractiveShell } from "@/components/InteractiveShell";
-import { NextActions } from "@/components/NextActions";
 import { SharePreview } from "@/components/SharePreview";
 import { exportChoiceCard } from "@/lib/canvas";
 import { MATCH } from "@/lib/config";
@@ -40,10 +39,7 @@ export function PredictionInteractive() {
   }
 
   return (
-    <InteractiveShell step="Перед матчем · 20 секунд" title="Дайте свой прогноз" description="Выберите исход и точный счёт. Никакой регистрации — только ваш прогноз и готовая карточка." after={<NextActions actions={[
-      { href: "/sostav", label: "Собрать стартовый состав", description: "Выберите свои 11 игроков на матч" },
-      { href: "/fantasy", label: "Собрать Fantasy-пятёрку", description: "Уложитесь в бюджет и назначьте капитана" },
-    ]} />} preview={
+    <InteractiveShell step="Перед матчем · 20 секунд" title="Дайте свой прогноз" description="Выберите исход и точный счёт. Никакой регистрации — только ваш прогноз и готовая карточка." preview={
       <SharePreview title="Мой прогноз" subtitle={`${MATCH.home} — ${MATCH.away} · ${MATCH.date}`}>
         <div className="preview-score"><small>{selectedOutcome.label}</small><strong>{homeScore} : {awayScore}</strong><span>{MATCH.time}</span></div>
       </SharePreview>

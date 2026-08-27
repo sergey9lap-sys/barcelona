@@ -49,8 +49,7 @@ export function LineupInteractive({
   unavailableIds = [],
   requiredYouth = 0,
   next = [
-    { href: "/prognoz", label: "Сделать прогноз", description: "Выберите исход и точный счёт матча" },
-    { href: "/fantasy", label: "Собрать Fantasy-пятёрку", description: "Пять игроков, бюджет и капитан ×2" },
+    { href: "/prognoz", label: "Сделать прогноз на матч", description: "Выберите исход и точный счёт" },
   ],
 }: Props = {}) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
