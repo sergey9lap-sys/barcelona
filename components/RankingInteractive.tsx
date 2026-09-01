@@ -33,7 +33,7 @@ export function RankingInteractive() {
   }
 
   return (
-    <InteractiveShell step="После матча · 40 секунд" title="Кто был лучшим?" description={`Расставьте ${rankingPlayers.length} сыгравших футболистов от лучшего к худшему. Список обновляется после каждого матча, а результат скачивается готовой карточкой.`} after={<NextActions actions={[
+    <InteractiveShell className="ranking-shell" step="После матча · 40 секунд" title="Кто был лучшим?" description={`Расставьте ${rankingPlayers.length} сыгравших футболистов от лучшего к худшему. Список обновляется после каждого матча, а результат скачивается готовой карточкой.`} after={<NextActions actions={[
       { href: "/sostav", label: "Собрать состав Барсы", description: "Выберите стартовые 11 и расставьте их на поле" },
       { href: "/prognoz", label: "Сделать прогноз на матч", description: "Выберите исход и точный счёт" },
     ]} />} preview={

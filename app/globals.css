@@ -362,6 +362,12 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .lineup-shell .page-heading { grid-column: 1 / -1; margin-bottom: 0; }
 .lineup-shell .editor-column > .control-panel { grid-column: 1; grid-row: 2; }
 .lineup-shell .preview-column { min-width: 0; grid-column: 2; grid-row: 2; }
+.ranking-shell { width: min(1600px, 100%); }
+.ranking-shell .workspace { grid-template-columns: minmax(620px, 1fr) minmax(520px, .86fr); gap: clamp(28px, 3vw, 48px); }
+.ranking-shell .editor-column { display: contents; }
+.ranking-shell .page-heading { grid-column: 1 / -1; margin-bottom: 0; }
+.ranking-shell .editor-column > .control-panel { grid-column: 1; grid-row: 2; }
+.ranking-shell .preview-column { min-width: 0; grid-column: 2; grid-row: 2; }
 .prediction-shell { width: min(1600px, 100%); }
 .prediction-shell .workspace { grid-template-columns: minmax(620px, 1fr) minmax(520px, .86fr); gap: clamp(28px, 3vw, 48px); }
 .prediction-shell .editor-column { display: contents; }
@@ -541,6 +547,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .workspace { grid-template-columns: minmax(0, 1fr) 390px; gap: 32px; }
   .player-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .lineup-shell .workspace { grid-template-columns: minmax(0, 1fr) 430px; gap: 28px; }
+  .ranking-shell .workspace { grid-template-columns: minmax(0, 1fr) 430px; gap: 28px; }
   .prediction-shell .workspace { grid-template-columns: minmax(0, 1fr) 430px; gap: 28px; }
 }
 
@@ -555,6 +562,8 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .page-heading h1 { font-size: clamp(40px, 12vw, 64px); }
   .lineup-shell .workspace { display: flex; }
   .lineup-shell .share-preview { width: min(100%, 620px); }
+  .ranking-shell .workspace { display: flex; }
+  .ranking-shell .share-preview { width: min(100%, 620px); }
   .prediction-shell .workspace { display: flex; }
   .prediction-shell .share-preview { width: min(100%, 620px); }
   .prediction-matchup { grid-template-columns: minmax(0,1fr) 100px minmax(0,1fr); }
