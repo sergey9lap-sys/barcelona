@@ -50,6 +50,7 @@ export function LineupInteractive({
   requiredYouth = 0,
   next = [
     { href: "/prognoz", label: "Сделать прогноз на матч", description: "Выберите исход и точный счёт" },
+    { href: "/rating", label: "Оценить игроков после матча", description: "Расставьте сыгравших от лучшего к худшему" },
   ],
 }: Props = {}) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);

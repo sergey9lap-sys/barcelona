@@ -5,18 +5,18 @@ import { useState } from "react";
 
 import { DownloadButton } from "@/components/DownloadButton";
 import { InteractiveShell } from "@/components/InteractiveShell";
+import { NextActions } from "@/components/NextActions";
 import { SharePreview } from "@/components/SharePreview";
 import { exportChoiceCard } from "@/lib/canvas";
 import { MATCH } from "@/lib/config";
 
-const outcomes = [
-  { id: "win", code: "П1", label: "Победа Барсы", detail: "Три очка остаются дома" },
-  { id: "draw", code: "X", label: "Ничья", detail: "Команды делят очки" },
-  { id: "loss", code: "П2", label: "Поражение", detail: "Атлетик забирает матч" },
-];
-
 export function PredictionInteractive() {
   const barcaIsHome = MATCH.home === "Барселона";
+  const outcomes = [
+    { id: "win", code: barcaIsHome ? "П1" : "П2", label: "Победа Барсы", detail: "Барса забирает три очка" },
+    { id: "draw", code: "X", label: "Ничья", detail: "Команды делят очки" },
+    { id: "loss", code: barcaIsHome ? "П2" : "П1", label: "Поражение", detail: `${MATCH.opponent} забирает матч` },
+  ];
   const [homeScore, setHomeScore] = useState(barcaIsHome ? 2 : 1);
   const [awayScore, setAwayScore] = useState(barcaIsHome ? 1 : 2);
   const [busy, setBusy] = useState(false);
@@ -42,7 +42,10 @@ export function PredictionInteractive() {
   }
 
   return (
-    <InteractiveShell className="prediction-shell" step="Перед матчем · 20 секунд" title="Дайте свой прогноз" description="Выберите исход и точный счёт. Никакой регистрации — только ваш прогноз и готовая карточка." preview={
+    <InteractiveShell className="prediction-shell" step="Перед матчем · 20 секунд" title="Дайте свой прогноз" description="Выберите исход и точный счёт. Никакой регистрации — только ваш прогноз и готовая карточка." after={<NextActions actions={[
+      { href: "/sostav", label: "Собрать состав Барсы", description: "Выберите стартовые 11 и расставьте их на поле" },
+      { href: "/rating", label: "Оценить игроков после матча", description: "Расставьте сыгравших от лучшего к худшему" },
+    ]} />} preview={
       <SharePreview title="Мой прогноз" subtitle={`${MATCH.home} — ${MATCH.away} · ${MATCH.time}`}>
         <div className="preview-score">
           <div className="preview-competition"><Image src={MATCH.competitionLogo} alt={MATCH.competition} width={104} height={35} /></div>
@@ -60,12 +63,12 @@ export function PredictionInteractive() {
             <span>{MATCH.competitionStage}</span>
           </div>
           <div className="prediction-team">
-            <Image src="/club/barca.png" alt="" width={54} height={54} />
+            <Image src={MATCH.homeLogo} alt={`Эмблема ${MATCH.home}`} width={54} height={54} />
             <span><small>Хозяева</small><strong>{MATCH.home}</strong></span>
           </div>
           <div className="prediction-kickoff"><small>Начало матча</small><strong>{MATCH.time}</strong><span>{MATCH.venue}</span></div>
           <div className="prediction-team is-away">
-            <Image src="/club/athletic-club.png" alt="Эмблема Athletic Club" width={58} height={58} />
+            <Image src={MATCH.awayLogo} alt={`Эмблема ${MATCH.away}`} width={58} height={58} />
             <span><small>Гости</small><strong>{MATCH.away}</strong></span>
           </div>
         </div>

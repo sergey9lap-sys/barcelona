@@ -41,11 +41,6 @@ export const players: Player[] = [
   { id: "hamza", name: "Хамза Абделькарим", number: 29, position: "FW", image: "/la-masia/hamza-abdelkarim.jpg", fantasyCost: 4 }
 ];
 
-export const rankingPlayers = players.filter((player) => [
-  "raphinha", "joan-garcia", "fermin", "pedri", "xavi-espart", "gordon", "adeyemi", "yamal",
-  "eric-garcia", "olmo", "bernal", "gavi", "gerard-martin", "kounde", "christensen", "cancelo",
-].includes(player.id));
-
 export const laMasiaPlayers = players.filter((player) => [
   "xavi-espart", "jordi-pesquer", "ebrima-tunkara", "orian-goren",
   "brian-farinas", "alex-gonzalez", "iker-rodriguez", "hamza",

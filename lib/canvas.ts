@@ -247,50 +247,57 @@ export async function exportPlayerListCard(title: string, kicker: string, ordere
     try { return await loadImage(player.image); } catch { return null; }
   }));
 
-  orderedPlayers.forEach((player, index) => {
-    const column = index < 8 ? 0 : 1;
-    const row = index % 8;
-    const x = column === 0 ? 54 : 550;
-    const y = 222 + row * 126;
+  const rowsPerColumn = Math.ceil(orderedPlayers.length / 2);
+  const rowHeight = Math.min(126, Math.floor(1008 / Math.max(1, rowsPerColumn)));
+  const cardHeight = Math.min(106, rowHeight - 12);
 
-    roundedRect(context, x, y, 476, 106, 20);
+  orderedPlayers.forEach((player, index) => {
+    const column = Math.floor(index / rowsPerColumn);
+    const row = index % rowsPerColumn;
+    const x = column === 0 ? 54 : 550;
+    const y = 222 + row * rowHeight;
+
+    roundedRect(context, x, y, 476, cardHeight, 20);
     context.fillStyle = index < 3 ? "rgba(31,66,150,.82)" : "rgba(6,17,44,.82)";
     context.fill();
     context.strokeStyle = index < 3 ? "rgba(225,55,112,.55)" : "rgba(147,178,255,.18)";
     context.lineWidth = 2;
     context.stroke();
 
-    const badge = context.createLinearGradient(x + 14, y + 15, x + 74, y + 91);
+    const centerY = y + cardHeight / 2;
+    const badgeHeight = Math.min(74, cardHeight - 24);
+    const badgeTop = centerY - badgeHeight / 2;
+    const badge = context.createLinearGradient(x + 14, badgeTop, x + 74, badgeTop + badgeHeight);
     badge.addColorStop(0, "#2d65d5");
     badge.addColorStop(1, "#a81652");
-    roundedRect(context, x + 14, y + 16, 60, 74, 16);
+    roundedRect(context, x + 14, badgeTop, 60, badgeHeight, 16);
     context.fillStyle = badge;
     context.fill();
     context.fillStyle = "#fff";
     context.font = '800 29px "Segoe UI", sans-serif';
     context.textAlign = "center";
-    context.fillText(String(index + 1), x + 44, y + 63);
+    context.fillText(String(index + 1), x + 44, centerY + 10);
 
     const image = images[index];
     if (image) {
       context.save();
       context.beginPath();
-      context.arc(x + 113, y + 53, 34, 0, Math.PI * 2);
+      context.arc(x + 113, centerY, 34, 0, Math.PI * 2);
       context.clip();
       const scale = Math.max(68 / image.naturalWidth, 68 / image.naturalHeight);
       const w = image.naturalWidth * scale;
       const h = image.naturalHeight * scale;
-      context.drawImage(image, x + 113 - w / 2, y + 19, w, h);
+      context.drawImage(image, x + 113 - w / 2, centerY - 34, w, h);
       context.restore();
     }
 
     context.textAlign = "left";
     context.fillStyle = "#fff";
     context.font = '750 22px "Segoe UI", sans-serif';
-    context.fillText(fitText(context, player.name, 270), x + 160, y + 46);
+    context.fillText(fitText(context, player.name, 270), x + 160, centerY - 7);
     context.fillStyle = "rgba(221,230,255,.68)";
     context.font = '600 16px "Segoe UI", sans-serif';
-    context.fillText(`${positionLabel(player.position)}${player.number ? ` · №${player.number}` : ""}`, x + 160, y + 74);
+    context.fillText(`${positionLabel(player.position)}${player.number ? ` · №${player.number}` : ""}`, x + 160, centerY + 21);
   });
 
   drawFooter(context);
