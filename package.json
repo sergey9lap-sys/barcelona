@@ -2,6 +2,10 @@
   "name": "barcelona-vision-interactives",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.28.1",
+  "engines": {
+    "node": ">=20 <23"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
