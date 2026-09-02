@@ -10,6 +10,23 @@ type ChoiceCard = {
   fileName: string;
 };
 
+type MatchPredictionCard = {
+  competition: string;
+  competitionStage: string;
+  competitionLogo: string;
+  home: string;
+  homeLogo: string;
+  away: string;
+  awayLogo: string;
+  date: string;
+  time: string;
+  venue: string;
+  homeScore: number;
+  awayScore: number;
+  outcome: string;
+  fileName: string;
+};
+
 export type SummaryRow = {
   label: string;
   value: string;
@@ -44,6 +61,20 @@ function loadImage(src: string) {
     image.onerror = reject;
     image.src = src;
   });
+}
+
+function drawImageContain(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+) {
+  const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+  const drawWidth = image.naturalWidth * scale;
+  const drawHeight = image.naturalHeight * scale;
+  context.drawImage(image, x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
 }
 
 function wrapText(context: CanvasRenderingContext2D, value: string, maxWidth: number, maxLines = 3) {
@@ -164,6 +195,99 @@ export async function exportChoiceCard(card: ChoiceCard) {
   context.fillStyle = "rgba(220,231,255,.74)";
   context.font = '600 25px "Segoe UI", sans-serif';
   context.fillText(fitText(context, card.secondary, 820), 540, 1024);
+
+  drawFooter(context);
+  await triggerDownload(canvas, card.fileName);
+}
+
+export async function exportMatchPredictionCard(card: MatchPredictionCard) {
+  await document.fonts.ready;
+  const { canvas, context } = createBase("МОЙ ПРОГНОЗ НА МАТЧ", `${card.competition} · ${card.date}`);
+
+  const [competitionLogo, homeLogo, awayLogo] = await Promise.all([
+    loadImage(card.competitionLogo).catch(() => null),
+    loadImage(card.homeLogo).catch(() => null),
+    loadImage(card.awayLogo).catch(() => null),
+  ]);
+
+  const panel = { x: 64, y: 190, w: 952, h: 915 };
+  roundedRect(context, panel.x, panel.y, panel.w, panel.h, 30);
+  const panelGradient = context.createLinearGradient(panel.x, panel.y, panel.x + panel.w, panel.y + panel.h);
+  panelGradient.addColorStop(0, "rgba(10,31,73,.96)");
+  panelGradient.addColorStop(.58, "rgba(5,16,42,.98)");
+  panelGradient.addColorStop(1, "rgba(43,8,35,.98)");
+  context.fillStyle = panelGradient;
+  context.fill();
+  context.strokeStyle = "rgba(137,170,255,.28)";
+  context.lineWidth = 2;
+  context.stroke();
+
+  const spotlight = context.createRadialGradient(540, 570, 20, 540, 570, 410);
+  spotlight.addColorStop(0, "rgba(47,104,223,.2)");
+  spotlight.addColorStop(.58, "rgba(183,25,85,.08)");
+  spotlight.addColorStop(1, "rgba(0,0,0,0)");
+  context.fillStyle = spotlight;
+  context.fillRect(panel.x, panel.y, panel.w, panel.h);
+
+  if (competitionLogo) drawImageContain(context, competitionLogo, 430, 230, 220, 68);
+  context.textAlign = "center";
+  context.fillStyle = "rgba(209,222,250,.68)";
+  context.font = '750 16px "Segoe UI", sans-serif';
+  context.fillText(card.competitionStage.toUpperCase(), 540, 330);
+
+  context.strokeStyle = "rgba(245,200,75,.22)";
+  context.lineWidth = 2;
+  context.beginPath();
+  context.moveTo(150, 365);
+  context.lineTo(930, 365);
+  context.stroke();
+
+  const teamY = 410;
+  const logoSize = 190;
+  if (homeLogo) drawImageContain(context, homeLogo, 170, teamY, logoSize, logoSize);
+  if (awayLogo) drawImageContain(context, awayLogo, 720, teamY, logoSize, logoSize);
+
+  context.fillStyle = "#ffffff";
+  context.font = '750 28px "BV Unbounded", "Segoe UI", sans-serif';
+  context.fillText(fitText(context, card.home.toUpperCase(), 290), 265, 640);
+  context.fillText(fitText(context, card.away.toUpperCase(), 290), 815, 640);
+  context.fillStyle = "rgba(199,213,242,.62)";
+  context.font = '700 15px "Segoe UI", sans-serif';
+  context.fillText("ХОЗЯЕВА", 265, 676);
+  context.fillText("ГОСТИ", 815, 676);
+
+  context.fillStyle = "rgba(245,200,75,.9)";
+  context.font = '800 19px "Segoe UI", sans-serif';
+  context.fillText("ТОЧНЫЙ СЧЁТ", 540, 432);
+  context.fillStyle = "#ffffff";
+  context.font = '750 102px "BV Unbounded", "Segoe UI", sans-serif';
+  context.fillText(`${card.homeScore} : ${card.awayScore}`, 540, 570);
+
+  roundedRect(context, 360, 720, 360, 58, 29);
+  const outcomeGradient = context.createLinearGradient(360, 720, 720, 778);
+  outcomeGradient.addColorStop(0, "rgba(47,104,223,.78)");
+  outcomeGradient.addColorStop(1, "rgba(183,25,85,.78)");
+  context.fillStyle = outcomeGradient;
+  context.fill();
+  context.fillStyle = "#ffffff";
+  context.font = '800 19px "Segoe UI", sans-serif';
+  context.fillText(card.outcome.toUpperCase(), 540, 757);
+
+  context.fillStyle = "#f5c84b";
+  context.font = '750 27px "BV Unbounded", "Segoe UI", sans-serif';
+  context.fillText(card.time, 540, 856);
+  context.fillStyle = "rgba(220,231,255,.75)";
+  context.font = '650 21px "Segoe UI", sans-serif';
+  context.fillText(`${card.venue} · ${card.date}`, 540, 902);
+
+  context.strokeStyle = "rgba(255,255,255,.1)";
+  context.beginPath();
+  context.moveTo(150, 964);
+  context.lineTo(930, 964);
+  context.stroke();
+  context.fillStyle = "rgba(220,231,255,.58)";
+  context.font = '650 17px "Segoe UI", sans-serif';
+  context.fillText("ПРОГНОЗ БОЛЕЛЬЩИКА · ПОДЕЛИСЬ СВОИМ ВЫБОРОМ", 540, 1011);
 
   drawFooter(context);
   await triggerDownload(canvas, card.fileName);

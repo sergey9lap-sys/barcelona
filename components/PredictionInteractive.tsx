@@ -7,7 +7,7 @@ import { DownloadButton } from "@/components/DownloadButton";
 import { InteractiveShell } from "@/components/InteractiveShell";
 import { NextActions } from "@/components/NextActions";
 import { SharePreview } from "@/components/SharePreview";
-import { exportChoiceCard } from "@/lib/canvas";
+import { exportMatchPredictionCard } from "@/lib/canvas";
 import { MATCH } from "@/lib/config";
 
 export function PredictionInteractive() {
@@ -37,7 +37,22 @@ export function PredictionInteractive() {
   async function download() {
     setBusy(true);
     try {
-      await exportChoiceCard({ title: "МОЙ ПРОГНОЗ НА МАТЧ", kicker: `${MATCH.competition} · ${MATCH.home} — ${MATCH.away}`, primary: `${homeScore} : ${awayScore}`, secondary: `${selectedOutcome.label} · ${MATCH.time}`, fileName: "barca-match-prediction" });
+      await exportMatchPredictionCard({
+        competition: MATCH.competition,
+        competitionStage: MATCH.competitionStage,
+        competitionLogo: MATCH.competitionLogo,
+        home: MATCH.home,
+        homeLogo: MATCH.homeLogo,
+        away: MATCH.away,
+        awayLogo: MATCH.awayLogo,
+        date: MATCH.date,
+        time: MATCH.time,
+        venue: MATCH.venue,
+        homeScore,
+        awayScore,
+        outcome: selectedOutcome.label,
+        fileName: "barca-match-prediction",
+      });
     } finally { setBusy(false); }
   }
 
