@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { ArrowRightLeft, X } from "lucide-react";
 import { useState } from "react";
 
 import { DownloadButton } from "@/components/DownloadButton";
@@ -9,22 +10,34 @@ import { NextActions } from "@/components/NextActions";
 import { SharePreview } from "@/components/SharePreview";
 import { exportPlayerListCard } from "@/lib/canvas";
 import { RATING_MATCH } from "@/lib/config";
-import { players } from "@/lib/data";
+import { players, positionLabel } from "@/lib/data";
 
 export function RankingInteractive() {
   const rankingPlayers = RATING_MATCH.playedPlayerIds.map((id) => players.find((player) => player.id === id)).filter(Boolean) as typeof players;
   const [orderedIds, setOrderedIds] = useState(rankingPlayers.map((player) => player.id));
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const orderedPlayers = orderedIds.map((id) => rankingPlayers.find((player) => player.id === id)!);
   const rowsPerColumn = Math.ceil(orderedPlayers.length / 2);
+  const rankingColumns = [orderedPlayers.slice(0, rowsPerColumn), orderedPlayers.slice(rowsPerColumn)];
 
-  function assign(slot: number, id: string) {
+  function selectSlot(slot: number) {
+    if (selectedSlot === null) {
+      setSelectedSlot(slot);
+      return;
+    }
+
+    if (selectedSlot === slot) {
+      setSelectedSlot(null);
+      return;
+    }
+
     setOrderedIds((current) => {
-      const currentIndex = current.indexOf(id);
       const next = [...current];
-      [next[slot], next[currentIndex]] = [next[currentIndex], next[slot]];
+      [next[slot], next[selectedSlot]] = [next[selectedSlot], next[slot]];
       return next;
     });
+    setSelectedSlot(null);
   }
 
   async function download() {
@@ -44,13 +57,36 @@ export function RankingInteractive() {
       <section className="control-panel">
         <div className="control-title"><h2>Ваш порядок</h2><span>{rankingPlayers.length} игроков</span></div>
         {RATING_MATCH.status === "preview" && <p className="ranking-preview-note">Демо-список для проверки механики. После матча здесь останутся только футболисты, которые вышли на поле.</p>}
-        <div className="ranking-grid" style={{ gridTemplateRows: `repeat(${rowsPerColumn}, auto)` }}>
-          {orderedPlayers.map((player, index) => (
-            <div className="rank-slot" key={`slot-${index}`}>
-              <strong>{index + 1}</strong><Image src={player.image} alt="" width={40} height={40} />
-              <select aria-label={`Игрок на ${index + 1} месте`} value={player.id} onChange={(event) => assign(index, event.target.value)} style={{ colorScheme: "dark" }}>
-                {rankingPlayers.map((option) => <option key={option.id} value={option.id}>{option.name}</option>)}
-              </select>
+        <p className="ranking-instruction">Нажмите на игрока, которого хотите переставить, а затем — на его новое место.</p>
+        {selectedSlot !== null && (
+          <div className="ranking-swap-status" role="status">
+            <Image src={orderedPlayers[selectedSlot].image} alt="" width={38} height={38} />
+            <span><small>Кого переставляем</small><strong>{orderedPlayers[selectedSlot].name}</strong></span>
+            <button type="button" onClick={() => setSelectedSlot(null)} aria-label="Отменить выбор"><X /></button>
+          </div>
+        )}
+        <div className="ranking-grid">
+          {rankingColumns.map((column, columnIndex) => (
+            <div className="ranking-column" key={`column-${columnIndex}`}>
+              {column.map((player, rowIndex) => {
+                const index = columnIndex * rowsPerColumn + rowIndex;
+                const isSelected = selectedSlot === index;
+                return (
+                  <button
+                    className={`rank-slot${isSelected ? " is-selected" : ""}${selectedSlot !== null && !isSelected ? " is-target" : ""}`}
+                    key={player.id}
+                    type="button"
+                    aria-pressed={isSelected}
+                    aria-label={isSelected ? `${player.name} выбран. Нажмите ещё раз, чтобы отменить` : `Поставить ${player.name} на ${selectedSlot === null ? "другое" : selectedSlot + 1} место`}
+                    onClick={() => selectSlot(index)}
+                  >
+                    <strong>{index + 1}</strong>
+                    <Image src={player.image} alt="" width={52} height={52} />
+                    <span><b>{player.name}</b><small>{positionLabel(player.position)}{player.number ? ` · №${player.number}` : ""}</small></span>
+                    <ArrowRightLeft aria-hidden="true" />
+                  </button>
+                );
+              })}
             </div>
           ))}
         </div>
