@@ -212,6 +212,18 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .control-title h2 { margin: 0; font-size: 17px; }
 .control-title span { color: var(--yellow); font-size: 12px; font-weight: 800; }
 
+.position-filter-heading { min-height: 26px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -4px 0 8px; color: #9fb1d6; font-size: 11px; }
+.position-filter-heading button { border: 0; padding: 4px 0; color: var(--yellow); background: transparent; cursor: pointer; font: inherit; font-weight: 750; }
+.position-filter-heading button:hover { color: white; }
+.position-filter-heading button:focus-visible { border-radius: 5px; outline: 2px solid var(--yellow); outline-offset: 2px; }
+.position-filter { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin-bottom: 12px; }
+.position-filter > button { min-width: 0; min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 6px; border: 1px solid rgba(139,169,232,.16); border-radius: 7px; padding: 0 10px; color: #cbd7ef; background: rgba(255,255,255,.03); cursor: pointer; transition: 180ms ease; }
+.position-filter > button:hover { border-color: rgba(113,160,255,.42); color: white; background: rgba(48,103,225,.09); }
+.position-filter > button:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+.position-filter > button.is-active { border-color: rgba(226,54,113,.64); color: white; background: linear-gradient(135deg,rgba(45,104,223,.2),rgba(183,25,85,.2)); }
+.position-filter span { overflow: hidden; font-size: 11px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.position-filter small { flex: 0 0 auto; color: var(--yellow); font-size: 10px; font-weight: 800; }
+
 .player-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .player-tile {
   min-width: 0;
@@ -584,6 +596,20 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .player-tile strong { font-size: 11px; }
   .player-tile small { font-size: 11px; }
   .player-tile i { width: 20px; height: 26px; border-radius: 5px; }
+  .lineup-shell .player-grid { grid-template-columns: 1fr; gap: 7px; }
+  .lineup-shell .position-filter { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lineup-shell .position-filter > button { min-height: 48px; }
+  .lineup-shell .position-filter span { font-size: 12px; }
+  .lineup-shell .player-tile { min-height: 58px; gap: 10px; padding: 6px 8px; }
+  .lineup-shell .player-tile img { width: 44px; height: 46px; }
+  .lineup-shell .player-tile strong { font-size: 13px; }
+  .lineup-shell .player-tile small { font-size: 11px; }
+  .lineup-shell .player-tile i { width: 30px; height: 30px; }
+  .lineup-shell .share-preview { width: 100%; height: 650px; aspect-ratio: auto; }
+  .lineup-shell .share-preview-content { height: calc(100% - 145px); }
+  .lineup-shell .pitch-dot { width: 64px; }
+  .lineup-shell .pitch-dot img { width: 40px; height: 40px; }
+  .lineup-shell .pitch-dot span { margin-top: 0; padding: 4px 5px; font-size: 8px; }
   .choice-grid { grid-template-columns: 1fr; }
   .prediction-shell .choice-grid { grid-template-columns: 1fr; }
   .prediction-matchup { grid-template-columns: 1fr auto 1fr; gap: 8px; padding: 14px 10px; }

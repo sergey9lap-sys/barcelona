@@ -27,6 +27,14 @@ type Props = {
 };
 
 type PitchPosition = { x: number; y: number };
+type PositionFilter = "ALL" | (typeof players)[number]["position"];
+
+const positionFilters: Array<{ id: Exclude<PositionFilter, "ALL">; label: string }> = [
+  { id: "GK", label: "Вратари" },
+  { id: "DF", label: "Защита" },
+  { id: "MF", label: "Полузащита" },
+  { id: "FW", label: "Атака" },
+];
 
 const formationSlots: Record<(typeof players)[number]["position"], PitchPosition[]> = {
   GK: [{ x: 50, y: 90 }],
@@ -56,9 +64,14 @@ export function LineupInteractive({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [pitchPositions, setPitchPositions] = useState<Record<string, PitchPosition>>({});
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [positionFilter, setPositionFilter] = useState<PositionFilter>("ALL");
   const [busy, setBusy] = useState(false);
   const pitchRef = useRef<HTMLDivElement>(null);
   const availablePlayers = useMemo(() => players.filter((player) => !unavailableIds.includes(player.id)), [unavailableIds]);
+  const visiblePlayers = useMemo(
+    () => positionFilter === "ALL" ? availablePlayers : availablePlayers.filter((player) => player.position === positionFilter),
+    [availablePlayers, positionFilter],
+  );
   const selectedPlayers = useMemo(() => selectedIds.map((id) => availablePlayers.find((player) => player.id === id)).filter(Boolean) as typeof players, [availablePlayers, selectedIds]);
   const positionCounts = useMemo(() => selectedPlayers.reduce((counts, player) => ({ ...counts, [player.position]: counts[player.position] + 1 }), { GK: 0, DF: 0, MF: 0, FW: 0 }), [selectedPlayers]);
   const youthIds = useMemo(() => new Set(["xavi-espart", "jordi-pesquer", "ebrima-tunkara", "orian-goren", "brian-farinas", "alex-gonzalez", "iker-rodriguez", "hamza"]), []);
@@ -176,8 +189,31 @@ export function LineupInteractive({
     <InteractiveShell className="lineup-shell" step={step} title={title} description={description} preview={preview} after={<NextActions actions={next} />} afterVisible={complete}>
       <section className="control-panel">
         <div className="control-title"><h2>Выберите игроков</h2><span>{selectedIds.length} / 11</span></div>
+        <div className="position-filter-heading">
+          <span>Быстрый выбор по позициям</span>
+          {positionFilter !== "ALL" ? <button type="button" onClick={() => setPositionFilter("ALL")}>Показать всех</button> : null}
+        </div>
+        <div className="position-filter" aria-label="Фильтр игроков по позиции">
+          {positionFilters.map((filter) => {
+            const total = availablePlayers.filter((player) => player.position === filter.id).length;
+            const selected = selectedPlayers.filter((player) => player.position === filter.id).length;
+            const active = positionFilter === filter.id;
+            return (
+              <button
+                key={filter.id}
+                type="button"
+                className={active ? "is-active" : ""}
+                aria-pressed={active}
+                onClick={() => setPositionFilter(active ? "ALL" : filter.id)}
+              >
+                <span>{filter.label}</span>
+                <small>{selected}/{total}</small>
+              </button>
+            );
+          })}
+        </div>
         <div className="player-grid">
-          {availablePlayers.map((player) => <PlayerTile key={player.id} player={player} selected={selectedIds.includes(player.id)} onClick={() => toggle(player.id)} disabled={!selectedIds.includes(player.id) && (selectedIds.length >= 11 || positionCounts[player.position] >= positionLimits[player.position])} />)}
+          {visiblePlayers.map((player) => <PlayerTile key={player.id} player={player} selected={selectedIds.includes(player.id)} onClick={() => toggle(player.id)} disabled={!selectedIds.includes(player.id) && (selectedIds.length >= 11 || positionCounts[player.position] >= positionLimits[player.position])} />)}
         </div>
         <p className="status-line"><strong>Схема:</strong> ВР {positionCounts.GK}/1 · ЗАЩ {positionCounts.DF}/4 · ПЗ {positionCounts.MF} · НАП {positionCounts.FW}.{requiredYouth ? ` Молодые: ${youthCount}/${requiredYouth}.` : ""} {complete ? "Состав готов." : "Нужно минимум 2 полузащитника, 1 нападающий и выполнить условие сценария."}</p>
         <DownloadButton onClick={download} disabled={!complete} busy={busy} />
