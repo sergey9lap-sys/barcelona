@@ -21,9 +21,10 @@ export const MATCH = {
 // Страница рейтинга и PNG автоматически перестроятся под их количество.
 export const RATING_MATCH = {
   ...MATCH,
-  status: "preview" as "preview" | "ready",
+  status: "ready" as "preview" | "ready",
   playedPlayerIds: [
-    "joan-garcia", "cubarsi", "christensen", "gerard-martin", "kounde", "eric-garcia",
-    "pedri", "fermin", "olmo", "de-jong", "rodri", "yamal", "raphinha", "gordon", "adeyemi", "bisiwu",
+    "joan-garcia", "xavi-espart", "gerard-martin", "cubarsi", "eric-garcia",
+    "pedri", "rodri", "fermin", "gordon", "raphinha", "yamal",
+    "kounde", "christensen", "bernal", "olmo", "adeyemi", "gabriel-jesus",
   ],
 };

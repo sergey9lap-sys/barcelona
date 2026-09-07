@@ -31,6 +31,7 @@ export const players: Player[] = [
   { id: "gordon", name: "Энтони Гордон", number: 17, position: "FW", image: "/players/gordon-2026.jpg", fantasyCost: 10 },
   { id: "adeyemi", name: "Карим Адейеми", number: 14, position: "FW", image: "/players/adeyemi-2026.jpg", fantasyCost: 10 },
   { id: "bisiwu", name: "Джесси Бисиву", number: 27, position: "FW", image: "/players/bisiwu-2026.jpg", fantasyCost: 8 },
+  { id: "gabriel-jesus", name: "Габриэль Жезус", number: 9, position: "FW", image: "/players/gabriel-jesus-2026.png", fantasyCost: 10 },
   { id: "xavi-espart", name: "Хави Эспарт", number: 12, position: "DF", image: "/players/xavi-espart-official-2026.jpg", fantasyCost: 4 },
   { id: "jordi-pesquer", name: "Жорди Пескер", number: 33, position: "DF", image: "/la-masia/jordi-pesquer.jpg", fantasyCost: 4 },
   { id: "ebrima-tunkara", name: "Эбрима Тункара", number: null, position: "MF", image: "/la-masia/ebrima-tunkara.jpg", fantasyCost: 4 },

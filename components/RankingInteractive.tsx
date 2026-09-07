@@ -51,7 +51,7 @@ export function RankingInteractive() {
       { href: "/prognoz", label: "Сделать прогноз на матч", description: "Выберите исход и точный счёт" },
     ]} />} preview={
       <SharePreview title="Мой рейтинг игроков" subtitle={`${RATING_MATCH.home} — ${RATING_MATCH.away}`} compact>
-        <div className="preview-list">{orderedPlayers.map((player, index) => <div key={player.id}><i>{index + 1}</i><Image src={player.image} alt="" width={28} height={28} /><span>{player.name}</span></div>)}</div>
+        <div className="preview-list" style={{ gridTemplateRows: `repeat(${rowsPerColumn}, minmax(0, 1fr))` }}>{orderedPlayers.map((player, index) => <div key={player.id}><i>{index + 1}</i><Image src={player.image} alt="" width={28} height={28} /><span>{player.name}</span></div>)}</div>
       </SharePreview>
     }>
       <section className="control-panel">

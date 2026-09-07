@@ -395,6 +395,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .ranking-shell .page-heading { grid-column: 1 / -1; margin-bottom: 0; }
 .ranking-shell .editor-column > .control-panel { grid-column: 1; grid-row: 2; }
 .ranking-shell .preview-column { min-width: 0; grid-column: 2; grid-row: 2; }
+.ranking-shell .share-preview-content { height: calc(100% - 190px); }
 .prediction-shell { width: min(1600px, 100%); }
 .prediction-shell .workspace { grid-template-columns: minmax(620px, 1fr) minmax(520px, .86fr); gap: clamp(28px, 3vw, 48px); }
 .prediction-shell .editor-column { display: contents; }
@@ -646,6 +647,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .rank-slot small { font-size: 11px; }
   .rank-slot > svg { width: 20px; }
   .ranking-shell .share-preview { width: 100%; height: 720px; aspect-ratio: auto; }
+  .ranking-shell .share-preview-content { height: calc(100% - 174px); }
   .ranking-shell .preview-list div { padding: 7px 5px; }
   .ranking-shell .preview-list img { width: 36px; height: 40px; }
   .ranking-shell .preview-list span { font-size: 9px; }
