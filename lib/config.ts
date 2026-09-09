@@ -17,6 +17,21 @@ export const MATCH = {
   awayLogo: "/club/barca.png",
 };
 
+export const PREDICTION_MATCH = {
+  opponent: "Фейеноорд",
+  home: "Барселона",
+  away: "Фейеноорд",
+  date: "9 сентября 2026",
+  time: "19:45 МСК",
+  venue: "Камп Ноу",
+  competition: "Лига чемпионов",
+  competitionStage: "1-й тур · Общий этап 2026/27",
+  competitionLogo: "/competition/champions-league.svg",
+  competitionLogoMonochrome: true,
+  homeLogo: "/club/barca.png",
+  awayLogo: "/club/feyenoord.png",
+};
+
 // После матча достаточно заменить этот список на реально сыгравших футболистов.
 // Страница рейтинга и PNG автоматически перестроятся под их количество.
 export const RATING_MATCH = {

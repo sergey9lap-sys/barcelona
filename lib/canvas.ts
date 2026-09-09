@@ -14,6 +14,7 @@ type MatchPredictionCard = {
   competition: string;
   competitionStage: string;
   competitionLogo: string;
+  competitionLogoMonochrome?: boolean;
   home: string;
   homeLogo: string;
   away: string;
@@ -229,7 +230,12 @@ export async function exportMatchPredictionCard(card: MatchPredictionCard) {
   context.fillStyle = spotlight;
   context.fillRect(panel.x, panel.y, panel.w, panel.h);
 
-  if (competitionLogo) drawImageContain(context, competitionLogo, 430, 230, 220, 68);
+  if (competitionLogo) {
+    context.save();
+    if (card.competitionLogoMonochrome) context.filter = "brightness(0) invert(1)";
+    drawImageContain(context, competitionLogo, 430, 230, 220, 68);
+    context.restore();
+  }
   context.textAlign = "center";
   context.fillStyle = "rgba(209,222,250,.68)";
   context.font = '750 16px "Segoe UI", sans-serif';
