@@ -18,18 +18,18 @@ export const MATCH = {
 };
 
 export const PREDICTION_MATCH = {
-  opponent: "Фейеноорд",
-  home: "Барселона",
-  away: "Фейеноорд",
-  date: "9 сентября 2026",
-  time: "19:45 МСК",
-  venue: "Камп Ноу",
-  competition: "Лига чемпионов",
-  competitionStage: "1-й тур · Общий этап 2026/27",
-  competitionLogo: "/competition/champions-league.svg",
-  competitionLogoMonochrome: true,
-  homeLogo: "/club/barca.png",
-  awayLogo: "/club/feyenoord.png",
+  opponent: "Леванте",
+  home: "Леванте",
+  away: "Барселона",
+  date: "13 сентября 2026",
+  time: "17:15",
+  venue: "Сьюдад де Валенсия",
+  competition: "Ла Лига",
+  competitionStage: "5-й тур · 2026/27",
+  competitionLogo: "/competition/laliga.png",
+  competitionLogoMonochrome: false,
+  homeLogo: "/club/levante.png",
+  awayLogo: "/club/barca.png",
 };
 
 // После матча достаточно заменить этот список на реально сыгравших футболистов.

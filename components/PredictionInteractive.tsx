@@ -64,7 +64,7 @@ export function PredictionInteractive() {
     ]} />} preview={
       <SharePreview title="Мой прогноз" subtitle={`${MATCH.home} — ${MATCH.away} · ${MATCH.time}`}>
         <div className="preview-score">
-          <div className="preview-competition"><Image src={MATCH.competitionLogo} alt={MATCH.competition} width={104} height={35} style={{ filter: "brightness(0) invert(1)" }} /></div>
+          <div className="preview-competition"><Image src={MATCH.competitionLogo} alt={MATCH.competition} width={104} height={35} style={MATCH.competitionLogoMonochrome ? { filter: "brightness(0) invert(1)" } : undefined} /></div>
           <small>{selectedOutcome.label}</small>
           <strong>{homeScore} : {awayScore}</strong>
           <div className="preview-score-teams"><span>{MATCH.home}</span><i>—</i><span>{MATCH.away}</span></div>
@@ -75,7 +75,7 @@ export function PredictionInteractive() {
       <section className="control-panel">
         <div className="prediction-matchup" aria-label={`${MATCH.home} против ${MATCH.away}, начало в ${MATCH.time}`}>
           <div className="match-competition">
-            <Image src={MATCH.competitionLogo} alt={MATCH.competition} width={98} height={33} style={{ filter: "brightness(0) invert(1)" }} />
+            <Image src={MATCH.competitionLogo} alt={MATCH.competition} width={98} height={33} style={MATCH.competitionLogoMonochrome ? { filter: "brightness(0) invert(1)" } : undefined} />
             <span>{MATCH.competitionStage}</span>
           </div>
           <div className="prediction-team">
